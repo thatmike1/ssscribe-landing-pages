@@ -50,7 +50,8 @@ export default function MesscribeLanding() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "22px 48px",
+          gap: 12,
+          padding: "18px var(--pad-x)",
           position: "sticky",
           top: 0,
           zIndex: 10,
@@ -63,34 +64,25 @@ export default function MesscribeLanding() {
           <SnakeIcon size={36} variant={variant} />
           <Wordmark size={24} name={name} />
         </div>
-        <div
-          style={{
-            display: "flex",
-            gap: 28,
-            alignItems: "center",
-            fontWeight: 600,
-            fontSize: 14,
-          }}
-        >
+        <div className="nav-links">
           <a style={navLink}>how it works</a>
           <a style={navLink}>languages</a>
           <a style={navLink}>pricing</a>
           <button type="button" style={ctaBtn}>
-            add to {platform} →
+            <span className="cta-full">add to {platform} →</span>
+            <span className="cta-short">add →</span>
           </button>
         </div>
       </nav>
 
       {/* hero ────────────────────────────────────────────── */}
-      <section style={{ padding: "56px 48px 32px", position: "relative" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 540px",
-            gap: 32,
-            alignItems: "center",
-          }}
-        >
+      <section
+        style={{
+          padding: "var(--pad-y-md) var(--pad-x) var(--pad-y-sm)",
+          position: "relative",
+        }}
+      >
+        <div className="hero-grid">
           <div>
             <div
               style={{
@@ -122,7 +114,7 @@ export default function MesscribeLanding() {
             <h1
               style={{
                 fontWeight: 800,
-                fontSize: 96,
+                fontSize: "clamp(40px, 9vw, 96px)",
                 lineHeight: 0.92,
                 letterSpacing: "-0.045em",
                 margin: 0,
@@ -140,7 +132,7 @@ export default function MesscribeLanding() {
               style={{
                 marginTop: 26,
                 maxWidth: 540,
-                fontSize: 20,
+                fontSize: "clamp(16px, 2vw, 20px)",
                 lineHeight: 1.45,
                 color: "var(--muted)",
                 fontWeight: 500,
@@ -207,21 +199,18 @@ export default function MesscribeLanding() {
               transform: "rotate(6deg)",
             }}
           >
-            <SnakeIdle size={540} variant={variant} />
+            <SnakeIdle size="clamp(220px, 50vw, 540px)" variant={variant} />
           </div>
         </div>
       </section>
 
       {/* live preview ─────────────────────────────────────── */}
-      <section style={{ padding: "48px 48px 64px" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "0.9fr 1.1fr",
-            gap: 40,
-            alignItems: "center",
-          }}
-        >
+      <section
+        style={{
+          padding: "var(--pad-y-md) var(--pad-x) var(--pad-y-lg)",
+        }}
+      >
+        <div className="preview-grid">
           <div>
             <div
               style={{
@@ -237,7 +226,7 @@ export default function MesscribeLanding() {
             </div>
             <h2
               style={{
-                fontSize: 56,
+                fontSize: "clamp(32px, 6vw, 56px)",
                 fontWeight: 800,
                 letterSpacing: "-0.035em",
                 margin: "0 0 18px",
@@ -315,7 +304,11 @@ export default function MesscribeLanding() {
       <Storyboard app={app} name={name} platform={platform} />
 
       {/* languages ───────────────────────────────────────── */}
-      <section style={{ padding: "56px 48px 32px" }}>
+      <section
+        style={{
+          padding: "var(--pad-y-md) var(--pad-x) var(--pad-y-sm)",
+        }}
+      >
         <div
           style={{
             fontFamily: "var(--font-mono)",
@@ -330,7 +323,7 @@ export default function MesscribeLanding() {
         </div>
         <h2
           style={{
-            fontSize: 48,
+            fontSize: "clamp(28px, 5.5vw, 48px)",
             fontWeight: 800,
             letterSpacing: "-0.035em",
             margin: "0 0 28px",
@@ -343,13 +336,12 @@ export default function MesscribeLanding() {
           {LANGUAGE_PILLS.map((l, i) => (
             <span
               key={l}
+              className="lang-pill"
               style={{
                 background:
                   i === LANGUAGE_PILLS.length - 1 ? "var(--accent)" : "#fff",
                 border: "1.5px solid var(--ink)",
                 borderRadius: 999,
-                padding: "9px 14px",
-                fontWeight: 600,
                 fontSize: 14,
               }}
             >
@@ -360,7 +352,7 @@ export default function MesscribeLanding() {
       </section>
 
       {/* pricing ─────────────────────────────────────────── */}
-      <section style={{ padding: "56px 48px" }}>
+      <section style={{ padding: "var(--pad-y-md) var(--pad-x)" }}>
         <div
           style={{
             fontFamily: "var(--font-mono)",
@@ -375,7 +367,7 @@ export default function MesscribeLanding() {
         </div>
         <h2
           style={{
-            fontSize: 48,
+            fontSize: "clamp(28px, 5.5vw, 48px)",
             fontWeight: 800,
             letterSpacing: "-0.035em",
             margin: "0 0 28px",
@@ -384,13 +376,7 @@ export default function MesscribeLanding() {
         >
           start free. stay free if you're light.
         </h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 18,
-          }}
-        >
+        <div className="pricing-grid">
           <div
             style={{
               background: "#fff",
@@ -562,7 +548,7 @@ export default function MesscribeLanding() {
       {/* final CTA ───────────────────────────────────────── */}
       <section
         style={{
-          padding: "72px 48px",
+          padding: "var(--pad-y-lg) var(--pad-x)",
           textAlign: "center",
           position: "relative",
         }}
@@ -572,7 +558,7 @@ export default function MesscribeLanding() {
         </div>
         <h2
           style={{
-            fontSize: 88,
+            fontSize: "clamp(44px, 9vw, 88px)",
             fontWeight: 800,
             letterSpacing: "-0.045em",
             margin: 0,
@@ -584,7 +570,7 @@ export default function MesscribeLanding() {
         </h2>
         <p
           style={{
-            fontSize: 19,
+            fontSize: "clamp(16px, 1.8vw, 19px)",
             color: "var(--muted)",
             marginTop: 18,
             fontWeight: 500,
@@ -612,16 +598,14 @@ export default function MesscribeLanding() {
       {/* footer ──────────────────────────────────────────── */}
       <footer
         style={{
-          padding: "40px 48px 32px",
+          padding: "var(--pad-y-sm) var(--pad-x) clamp(24px, 4vw, 32px)",
           background: "var(--ink)",
           color: "var(--bg)",
         }}
       >
         <div
+          className="footer-grid"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1.4fr 1fr 1fr 1fr",
-            gap: 40,
             paddingBottom: 28,
             borderBottom: "1px solid rgba(255,255,255,0.15)",
           }}

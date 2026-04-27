@@ -85,7 +85,7 @@ export function Storyboard({
   return (
     <section
       style={{
-        padding: "88px 48px 96px",
+        padding: "var(--pad-y-lg) var(--pad-x)",
         background: "var(--ink)",
         color: "var(--bg)",
         position: "relative",
@@ -97,7 +97,7 @@ export function Storyboard({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-end",
-          marginBottom: 56,
+          marginBottom: "clamp(36px, 6vw, 56px)",
           flexWrap: "wrap",
           gap: 16,
         }}
@@ -117,7 +117,7 @@ export function Storyboard({
           </div>
           <h2
             style={{
-              fontSize: 96,
+              fontSize: "clamp(48px, 10vw, 96px)",
               fontWeight: 800,
               letterSpacing: "-0.05em",
               margin: 0,
@@ -146,8 +146,9 @@ export function Storyboard({
       </div>
 
       <div style={{ position: "relative" }}>
-        {/* dashed connector running through the rail */}
+        {/* dashed connector running through the rail (desktop only) */}
         <div
+          className="story-connector"
           style={{
             position: "absolute",
             left: "8%",
@@ -160,18 +161,10 @@ export function Storyboard({
           }}
         />
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 28,
-            position: "relative",
-            zIndex: 1,
-          }}
-        >
+        <div className="story-rail">
           {/* ── 01 — long-press menu ───────────────────────────────── */}
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            <PhoneFrame>
+            <PhoneFrame className="phone-cap">
               <div
                 style={{
                   background: chatBg,
@@ -300,7 +293,7 @@ export function Storyboard({
               position: "relative",
             }}
           >
-            <PhoneFrame>
+            <PhoneFrame className="phone-cap">
               <div
                 style={{
                   background: chatBg,
@@ -431,6 +424,7 @@ export function Storyboard({
             </PhoneFrame>
 
             <div
+              className="story-thinking-peek"
               style={{
                 position: "absolute",
                 top: -34,
@@ -451,7 +445,7 @@ export function Storyboard({
 
           {/* ── 03 — transcript arrives ────────────────────────────── */}
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            <PhoneFrame>
+            <PhoneFrame className="phone-cap">
               <div
                 style={{
                   background: chatBg,
