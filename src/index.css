@@ -38,6 +38,18 @@
   --color-card: var(--card);
 }
 
+/*
+ * fluid spacing tokens. these clamp section padding so a 320px phone gets
+ * ~20px and a 1200px desktop gets the original 48–88px breathing room. one
+ * token, no breakpoints, no jump at the seam.
+ */
+:root {
+  --pad-x: clamp(20px, 5vw, 48px);
+  --pad-y-sm: clamp(28px, 5vw, 40px);
+  --pad-y-md: clamp(40px, 7vw, 56px);
+  --pad-y-lg: clamp(56px, 10vw, 88px);
+}
+
 html,
 body {
   margin: 0;
@@ -87,5 +99,159 @@ body {
   50% {
     opacity: 1;
     transform: translateY(-2px);
+  }
+}
+
+/*
+ * responsive layout primitives. the desktop comp was authored at 1200px,
+ * so anything below `lg` (1024px) collapses to a single-column reading flow.
+ * tablets in landscape stay desktop; phones and tablets in portrait get the
+ * stacked layout.
+ */
+
+/* hero: text + snake side-by-side on desktop, stacked on mobile */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+}
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr 540px;
+  }
+}
+
+/* live preview: text + chat side-by-side on desktop */
+.preview-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+}
+@media (min-width: 1024px) {
+  .preview-grid {
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 40px;
+  }
+}
+
+/* storyboard rail: 3 phones across on desktop, stacked on mobile */
+.story-rail {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 1024px) {
+  .story-rail {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+}
+
+/* horizontal connector dashes only make sense when phones are in a row */
+.story-connector {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .story-connector {
+    display: block;
+  }
+}
+
+/* the thinking snake peeking out of frame 02 — desktop flourish only */
+.story-thinking-peek {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .story-thinking-peek {
+    display: block;
+  }
+}
+
+/* phone frames cap their width when stacked so they don't fill a 600px column.
+ * align-self centers inside the flex column parent (margin auto wouldn't). */
+.phone-cap {
+  width: 100%;
+  max-width: 320px;
+  align-self: center;
+}
+@media (min-width: 1024px) {
+  .phone-cap {
+    max-width: none;
+    align-self: stretch;
+  }
+}
+
+/* pricing: 2 cards side-by-side on tablet+, stacked on phones */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+@media (min-width: 720px) {
+  .pricing-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* footer: 1 col → 2 col → 4 col as space allows */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+@media (min-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+}
+
+/* nav inline links: hidden on mobile, the CTA does the work */
+.nav-links {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+.nav-links > a {
+  display: none;
+}
+@media (min-width: 768px) {
+  .nav-links > a {
+    display: inline;
+  }
+}
+
+/* swap CTA copy on tiny screens so it never overflows the nav row */
+.cta-short {
+  display: none;
+}
+@media (max-width: 380px) {
+  .cta-full {
+    display: none;
+  }
+  .cta-short {
+    display: inline;
+  }
+}
+
+/* language pills: bump touch target on mobile without bloating desktop */
+.lang-pill {
+  padding: 9px 14px;
+  font-weight: 600;
+}
+@media (max-width: 640px) {
+  .lang-pill {
+    padding: 11px 14px;
   }
 }
