@@ -2,9 +2,13 @@
  * snake mascot. the source of truth is a 600x600 png — same image, two tints
  * (blue for messscribe, green for whatsscribe). idle/thinking/listening are
  * css keyframe wrappers around the image, not separate art.
+ *
+ * size accepts a number (fixed px) or a string (e.g. `clamp(220px, 50vw,
+ * 540px)`) so the hero snake can scale fluidly with the viewport.
  */
 
 type Variant = "blue" | "green";
+type Size = number | string;
 
 const SRC: Record<Variant, string> = {
   blue: "/snake-blue.png",
@@ -12,7 +16,7 @@ const SRC: Record<Variant, string> = {
 };
 
 type SnakeProps = {
-  size?: number;
+  size?: Size;
   variant?: Variant;
   className?: string;
 };
@@ -22,8 +26,6 @@ export function Snake({ size = 200, variant = "blue", className }: SnakeProps) {
     <img
       src={SRC[variant]}
       alt=""
-      width={size}
-      height={size}
       draggable={false}
       className={className}
       style={{
