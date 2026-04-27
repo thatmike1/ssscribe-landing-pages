@@ -1,70 +1,37 @@
-# vite-react-shadcn-starter
+# ssscribe landing pages
 
-Opinionated starter template for building apps with Vite, React, and shadcn/ui.
+Public-facing marketing pages for the **ssscribe** family — voice-note
+transcription bots that live inside messaging apps.
 
-## Tech Stack
+| Sibling | Platform | Theme | Status |
+|---|---|---|---|
+| messscribe | Messenger | blue | shipped |
+| whatsscribe | WhatsApp | green | planned |
 
-| Category | Tech |
-|---|---|
-| **Framework** | React 19 + TypeScript |
-| **Build** | Vite 6 (SWC) |
-| **Styling** | Tailwind CSS v4 |
-| **Components** | shadcn/ui (New York style) |
-| **Icons** | Lucide React |
-| **Routing** | React Router v7 |
-| **Data Fetching** | TanStack React Query v5 |
-| **Forms** | React Hook Form + Zod v4 |
-| **Toasts** | Sonner |
+Both siblings share one page component themed via CSS variables — dropping in
+`whatsscribe` later is a class swap, not a fork.
 
-## What's Included
+## Stack
 
-- React Query provider
-- React Router with layout pattern
-- Path aliases (`@/` -> `src/`)
-- ESLint with `no-explicit-any` set to error
-- Base shadcn/ui components: Button, Input, Label, Card, Sonner
+- React 19 + TypeScript
+- Vite 6 (SWC)
+- Tailwind v4 (utilities) + CSS variables (theme tokens)
+- React Router v7
 
-## Getting Started
+No UI library. The design is chunky-illustrated (1.5–2px ink borders, hard
+shadow offsets, 96px display type) — shadcn's sleek defaults fought it, so
+components are handcoded.
+
+## Run
 
 ```bash
-# clone
-git clone https://github.com/thatmike1/vite-react-shadcn-starter.git my-app
-cd my-app
-
-# install
 npm install
-
-# run
 npm run dev
 ```
 
-## Project Structure
+## Brand context
 
-```
-src/
-  components/ui/     # shadcn/ui components
-  hooks/             # custom hooks
-  lib/               # query client, utils (cn)
-  pages/             # layout
-  App.tsx
-  main.tsx
-```
-
-## Adding shadcn/ui Components
-
-```bash
-npx shadcn@latest add [component-name]
-```
-
-## Conventions
-
-- Kebab-case file names (`use-auth.ts`, not `useAuth.ts`)
-- `.ts` for hooks/utils, `.tsx` only when returning JSX
-- No `any` types (eslint will error)
-
-## Looking for Supabase?
-
-Check out [vite-react-supabase-starter](https://github.com/thatmike1/vite-react-supabase-starter) which adds Supabase auth, protected routes, and a login page on top of this template.
+See `.impeccable.md` for the design context that drives every visual decision.
 
 ## License
 
