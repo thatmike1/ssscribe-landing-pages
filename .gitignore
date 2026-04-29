@@ -26,3 +26,6 @@ dist-ssr
 .env
 
 bun.lockb
+.playwright-cli/
+.audit-screenshots/
+.claude/

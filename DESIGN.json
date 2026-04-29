@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-04-29T00:00:00Z",
+  "title": "Design System: ssscribe",
+  "extensions": {
+    "colorMeta": {
+      "frosty-blue-wash": {
+        "role": "neutral",
+        "displayName": "Frosty Blue Wash",
+        "canonical": "oklch(96% 0.015 260)",
+        "tonalRamp": [
+          "oklch(15% 0.015 260)",
+          "oklch(30% 0.015 260)",
+          "oklch(45% 0.015 260)",
+          "oklch(60% 0.015 260)",
+          "oklch(72% 0.015 260)",
+          "oklch(84% 0.015 260)",
+          "oklch(92% 0.015 260)",
+          "oklch(96% 0.015 260)"
+        ]
+      },
+      "deep-midnight-ink": {
+        "role": "neutral",
+        "displayName": "Deep Midnight Ink",
+        "canonical": "oklch(18% 0.06 260)",
+        "tonalRamp": [
+          "oklch(18% 0.06 260)",
+          "oklch(28% 0.06 260)",
+          "oklch(38% 0.06 260)",
+          "oklch(48% 0.06 260)",
+          "oklch(58% 0.06 260)",
+          "oklch(68% 0.06 260)",
+          "oklch(80% 0.06 260)",
+          "oklch(92% 0.04 260)"
+        ]
+      },
+      "messenger-blue": {
+        "role": "primary",
+        "displayName": "Messenger Blue",
+        "canonical": "oklch(62% 0.22 260)",
+        "tonalRamp": [
+          "oklch(18% 0.12 260)",
+          "oklch(30% 0.16 260)",
+          "oklch(42% 0.20 260)",
+          "oklch(54% 0.22 260)",
+          "oklch(62% 0.22 260)",
+          "oklch(72% 0.18 260)",
+          "oklch(84% 0.10 260)",
+          "oklch(94% 0.04 260)"
+        ]
+      },
+      "yolk-yellow": {
+        "role": "secondary",
+        "displayName": "Yolk Yellow",
+        "canonical": "oklch(90% 0.15 90)",
+        "tonalRamp": [
+          "oklch(20% 0.06 90)",
+          "oklch(35% 0.10 90)",
+          "oklch(48% 0.13 90)",
+          "oklch(60% 0.15 90)",
+          "oklch(72% 0.15 90)",
+          "oklch(82% 0.15 90)",
+          "oklch(90% 0.15 90)",
+          "oklch(96% 0.06 90)"
+        ]
+      },
+      "dusty-slate": {
+        "role": "neutral",
+        "displayName": "Dusty Slate",
+        "canonical": "oklch(53% 0.06 260)",
+        "tonalRamp": [
+          "oklch(18% 0.06 260)",
+          "oklch(28% 0.06 260)",
+          "oklch(38% 0.06 260)",
+          "oklch(48% 0.06 260)",
+          "oklch(53% 0.06 260)",
+          "oklch(65% 0.06 260)",
+          "oklch(78% 0.04 260)",
+          "oklch(90% 0.02 260)"
+        ]
+      },
+      "clean-white": {
+        "role": "neutral",
+        "displayName": "Clean White",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "oklch(20% 0 0)",
+          "oklch(35% 0 0)",
+          "oklch(50% 0 0)",
+          "oklch(65% 0 0)",
+          "oklch(78% 0 0)",
+          "oklch(88% 0 0)",
+          "oklch(95% 0 0)",
+          "oklch(100% 0 0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "hero headline only. one per page. the scale IS the design."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "section headings. the zine's chapter breaks."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "card headers, pricing tier names, storyboard step headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "running text, descriptions, feature explanations. max 65-75ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "editorial eyebrows, version stamps, chip labels. the zine's annotation voice."
+      }
+    },
+    "shadows": [
+      {
+        "name": "accent-stamp",
+        "value": "4px 4px 0 var(--accent)",
+        "purpose": "hero cta button only. accent-colored offset draws the eye to the primary action."
+      },
+      {
+        "name": "ink-stamp",
+        "value": "6px 6px 0 var(--ink)",
+        "purpose": "pricing cards, chat preview, final cta card. structural weight for key containers."
+      }
+    ],
+    "motion": [
+      {
+        "name": "hiss-breathe",
+        "value": "scale(1) → scale(1.025) → scale(1), 3.4s ease-in-out infinite",
+        "purpose": "snake idle animation. subtle breathing rhythm."
+      },
+      {
+        "name": "hiss-sway",
+        "value": "rotate(-2deg) → rotate(2deg), 2.6s ease-in-out infinite",
+        "purpose": "snake thinking animation. gentle pendulum sway."
+      },
+      {
+        "name": "typing-dot",
+        "value": "opacity/translateY bounce, 1.2s ease-in-out infinite",
+        "purpose": "typing indicator dots in chat preview."
+      }
+    ],
+    "breakpoints": [
+      { "name": "cta-swap", "value": "380px" },
+      { "name": "footer-2col", "value": "560px" },
+      { "name": "pill-bump", "value": "640px" },
+      { "name": "pricing-2col", "value": "720px" },
+      { "name": "nav-full", "value": "768px" },
+      { "name": "desktop", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "the main cta. pill-shaped, ink-bordered, accent-stamped shadow.",
+      "html": "<button class=\"ds-btn-primary\">try messscribe free</button>",
+      "css": ".ds-btn-primary { background: #3b82f6; color: #ffffff; font-family: 'Bricolage Grotesque', 'Inter', sans-serif; font-size: 1rem; font-weight: 700; line-height: 1; text-transform: lowercase; padding: 14px 32px; border: 1.5px solid #0a1840; border-radius: 999px; box-shadow: 4px 4px 0 #3b82f6; cursor: pointer; transition: background 0.2s ease-out, box-shadow 0.2s ease-out; } .ds-btn-primary:hover { background: #0a1840; box-shadow: 4px 4px 0 #0a1840; } .ds-btn-primary:focus-visible { outline: 2px solid #3b82f6; outline-offset: 3px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "secondary action. transparent with ink border, no shadow at rest.",
+      "html": "<button class=\"ds-btn-ghost\">see how it works</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: #0a1840; font-family: 'Bricolage Grotesque', 'Inter', sans-serif; font-size: 1rem; font-weight: 700; line-height: 1; text-transform: lowercase; padding: 14px 32px; border: 1.5px solid #0a1840; border-radius: 999px; box-shadow: none; cursor: pointer; transition: background 0.2s ease-out; } .ds-btn-ghost:hover { background: #eef4ff; } .ds-btn-ghost:focus-visible { outline: 2px solid #3b82f6; outline-offset: 3px; }"
+    },
+    {
+      "name": "Language Chip",
+      "kind": "chip",
+      "refersTo": "chip-language",
+      "description": "language pill with flag emoji. display-only, no toggle state.",
+      "html": "<span class=\"ds-chip-lang\">🇧🇷 português</span>",
+      "css": ".ds-chip-lang { display: inline-flex; align-items: center; gap: 6px; background: #ffffff; color: #0a1840; font-family: 'Inter', system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1; padding: 8px 16px; border: 1.5px solid #0a1840; border-radius: 999px; }"
+    },
+    {
+      "name": "Pricing Card",
+      "kind": "card",
+      "refersTo": "card-pricing",
+      "description": "pricing tier card. ink-bordered, ink-stamped shadow, generous padding.",
+      "html": "<div class=\"ds-card-pricing\"><span class=\"ds-card-eyebrow\">free</span><div class=\"ds-card-price\">$0</div><p class=\"ds-card-desc\">20 min/month of voice transcription</p><button class=\"ds-btn-primary\" style=\"width:100%\">get started</button></div>",
+      "css": ".ds-card-pricing { background: #ffffff; color: #0a1840; padding: 40px 32px; border: 2px solid #0a1840; border-radius: 24px; box-shadow: 6px 6px 0 #0a1840; display: flex; flex-direction: column; gap: 16px; } .ds-card-eyebrow { font-family: 'Space Mono', ui-monospace, monospace; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; color: #3b82f6; } .ds-card-price { font-family: 'Bricolage Grotesque', 'Inter', sans-serif; font-size: 3.5rem; font-weight: 800; line-height: 1; letter-spacing: -0.035em; } .ds-card-desc { font-family: 'Inter', system-ui, sans-serif; font-size: 1rem; line-height: 1.5; color: #5d6f9e; }"
+    },
+    {
+      "name": "Badge Pill",
+      "kind": "chip",
+      "refersTo": "chip-language",
+      "description": "accent-filled badge for eyebrow labels like 'live preview'.",
+      "html": "<span class=\"ds-badge\">live preview</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; background: #3b82f6; color: #ffffff; font-family: 'Space Mono', ui-monospace, monospace; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 16px; border: 1.5px solid #0a1840; border-radius: 999px; }"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "sticky top nav with wordmark, text links, and cta button.",
+      "html": "<nav class=\"ds-nav\"><div class=\"ds-nav-brand\">mes<span style=\"color:#3b82f6\">sss</span>cribe</div><div class=\"ds-nav-links\"><a href=\"#\" class=\"ds-nav-link\">how it works</a><a href=\"#\" class=\"ds-nav-link\">languages</a><a href=\"#\" class=\"ds-nav-link\">pricing</a></div><button class=\"ds-btn-primary\" style=\"padding:10px 24px;font-size:0.875rem\">try free</button></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; padding: 16px clamp(20px, 5vw, 48px); position: sticky; top: 0; z-index: 50; background: transparent; } .ds-nav-brand { font-family: 'Bricolage Grotesque', 'Inter', sans-serif; font-size: 1.25rem; font-weight: 800; color: #0a1840; letter-spacing: -0.02em; } .ds-nav-links { display: flex; gap: 32px; } .ds-nav-link { font-family: 'Bricolage Grotesque', 'Inter', sans-serif; font-size: 0.9375rem; font-weight: 500; color: #0a1840; text-decoration: none; transition: color 0.15s ease-out; } .ds-nav-link:hover { color: #3b82f6; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Hissing Zine",
+    "overview": "a self-published zine with a snake on the masthead. the design is loud in form but quiet in voice: oversized headlines in tight tracking, hard ink borders, offset shadows that feel stamped onto the page, and a lowercase tone that never raises its voice. the snake mascot enters the scene like an editorial character, not clip art.\n\nthe system rejects three aesthetics by name. sleek saas: no soft shadows, no system-font stacks, no polished corporate smoothness. raw brutalism: the hard edges are neo-brutalist, not anti-design. warmth and playfulness matter. glossy gradients: no blurs, no glass, no frosted surfaces. everything is flat color, hard-edged, and intentional.",
+    "keyCharacteristics": [
+      "oversized display type with tight tracking and low line-height",
+      "1.5-2px ink borders on everything interactive",
+      "hard offset shadows (no blur, no spread) as structural decoration",
+      "pill shapes for all small interactive elements",
+      "monospace labels as editorial eyebrows",
+      "light tinted background, never pure white page"
+    ],
+    "rules": [
+      {
+        "name": "The Ink Border Rule",
+        "body": "every white surface touching the page ground gets a 1.5-2px var(--ink) border. white cards, pills, buttons, inputs. no exceptions.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Blur Rule",
+        "body": "shadows never have blur or spread. box-shadow values are always Xpx Ypx 0 color. if you're about to type rgba(0,0,0,0.1), stop.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Two-Shadow Rule",
+        "body": "only two shadow values exist: accent stamp (4px 4px 0 var(--accent)) and ink stamp (6px 6px 0 var(--ink)). don't invent a third.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Lowercase Rule",
+        "body": "all display and headline text is lowercase. no title case, no sentence case. the brand whispers; the type size does the shouting.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tight Tracking Rule",
+        "body": "display and headline text use negative letter spacing (-0.035em to -0.05em). labels go opposite with positive tracking (0.06em).",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "Do use 1.5-2px var(--ink) borders on every interactive element and every white surface on the page ground.",
+      "Do use hard offset shadows (Xpx Ypx 0 color) exclusively. only accent stamp and ink stamp.",
+      "Do keep all display and headline text lowercase.",
+      "Do use Space Mono for editorial eyebrows, version stamps, and metadata labels.",
+      "Do give the snake mascot deliberate, earned appearances.",
+      "Do use css variables for all theme-dependent values.",
+      "Do fill component interiors generously."
+    ],
+    "donts": [
+      "Don't use soft drop-shadows (box-shadow: 0 4px 12px rgba(0,0,0,0.1)). that's sleek saas.",
+      "Don't use blur, frosted glass, glassmorphism, or gradient backgrounds.",
+      "Don't use pure #000 black or pure #fff white as page backgrounds.",
+      "Don't scatter the snake mascot across sections as decoration.",
+      "Don't use title case or sentence case in headlines.",
+      "Don't use Inter for headlines or display text.",
+      "Don't use border-left/right > 1px as a colored accent stripe.",
+      "Don't use gradient text (background-clip: text with gradient).",
+      "Don't create identical card grids."
+    ]
+  }
+}
