@@ -199,12 +199,12 @@ export function ChatPreview({
                   color: active ? "white" : "var(--ink)",
                   border: "1px solid var(--ink)",
                   borderRadius: 999,
-                  padding: "5px 11px",
-                  fontSize: 12,
+                  padding: "8px 13px",
+                  fontSize: 12.5,
                   fontWeight: 600,
                   cursor: "pointer",
                   fontFamily: "inherit",
-                  transition: "all .15s",
+                  transition: "background 160ms ease, color 160ms ease",
                 }}
               >
                 {TRANSCRIPT_SAMPLES[l].flag} {l}

@@ -19,16 +19,21 @@ const navLink: CSSProperties = {
   cursor: "pointer",
 };
 
+/**
+ * primary cta. messenger-blue at rest, ink on hover (per DESIGN.md). the
+ * className wires the hover state via a global rule in index.css.
+ */
 const ctaBtn: CSSProperties = {
-  background: "var(--ink)",
+  background: "var(--accent)",
   color: "#fff",
-  border: "none",
+  border: "1.5px solid var(--ink)",
   borderRadius: 999,
   padding: "10px 18px",
   fontWeight: 700,
   fontSize: 14,
   cursor: "pointer",
   fontFamily: "inherit",
+  transition: "background 160ms ease",
 };
 
 export default function MesscribeLanding() {
@@ -68,7 +73,7 @@ export default function MesscribeLanding() {
           <a style={navLink}>how it works</a>
           <a style={navLink}>languages</a>
           <a style={navLink}>pricing</a>
-          <button type="button" style={ctaBtn}>
+          <button type="button" className="cta-btn" style={ctaBtn}>
             <span className="cta-full">add to {platform} →</span>
             <span className="cta-short">add →</span>
           </button>
@@ -114,8 +119,8 @@ export default function MesscribeLanding() {
             <h1
               style={{
                 fontWeight: 800,
-                fontSize: "clamp(40px, 9vw, 96px)",
-                lineHeight: 0.92,
+                fontSize: "clamp(48px, 8vw, 96px)",
+                lineHeight: 0.9,
                 letterSpacing: "-0.045em",
                 margin: 0,
                 textWrap: "balance",
@@ -154,17 +159,19 @@ export default function MesscribeLanding() {
             >
               <button
                 type="button"
+                className="cta-btn"
                 style={{
                   ...ctaBtn,
                   padding: "18px 28px",
                   fontSize: 17,
-                  boxShadow: "4px 4px 0 var(--accent)",
+                  boxShadow: "4px 4px 0 var(--ink)",
                 }}
               >
                 add to {platform} — free →
               </button>
               <button
                 type="button"
+                className="ghost-btn"
                 style={{
                   background: "transparent",
                   color: "var(--ink)",
@@ -175,6 +182,7 @@ export default function MesscribeLanding() {
                   fontSize: 15,
                   cursor: "pointer",
                   fontFamily: "inherit",
+                  transition: "background 160ms ease",
                 }}
               >
                 ▶ watch a 20-second demo
@@ -216,7 +224,7 @@ export default function MesscribeLanding() {
               style={{
                 fontFamily: "var(--font-mono)",
                 fontSize: 11,
-                letterSpacing: "0.14em",
+                letterSpacing: "0.06em",
                 textTransform: "uppercase",
                 color: "var(--muted)",
                 marginBottom: 14,
@@ -313,7 +321,7 @@ export default function MesscribeLanding() {
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: 11,
-            letterSpacing: "0.14em",
+            letterSpacing: "0.06em",
             textTransform: "uppercase",
             color: "var(--muted)",
             marginBottom: 14,
@@ -323,11 +331,11 @@ export default function MesscribeLanding() {
         </div>
         <h2
           style={{
-            fontSize: "clamp(28px, 5.5vw, 48px)",
+            fontSize: "clamp(32px, 5vw, 56px)",
             fontWeight: 800,
             letterSpacing: "-0.035em",
             margin: "0 0 28px",
-            lineHeight: 1,
+            lineHeight: 0.95,
           }}
         >
           yes, it hears yoursss.
@@ -357,7 +365,7 @@ export default function MesscribeLanding() {
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: 11,
-            letterSpacing: "0.14em",
+            letterSpacing: "0.06em",
             textTransform: "uppercase",
             color: "var(--muted)",
             marginBottom: 14,
@@ -367,11 +375,11 @@ export default function MesscribeLanding() {
         </div>
         <h2
           style={{
-            fontSize: "clamp(28px, 5.5vw, 48px)",
+            fontSize: "clamp(32px, 5vw, 56px)",
             fontWeight: 800,
             letterSpacing: "-0.035em",
             margin: "0 0 28px",
-            lineHeight: 1,
+            lineHeight: 0.95,
           }}
         >
           start free. stay free if you're light.
@@ -382,7 +390,7 @@ export default function MesscribeLanding() {
               background: "#fff",
               border: "2px solid var(--ink)",
               borderRadius: 24,
-              padding: "32px 28px",
+              padding: "40px 32px",
               boxShadow: "6px 6px 0 var(--ink)",
             }}
           >
@@ -391,7 +399,7 @@ export default function MesscribeLanding() {
                 fontFamily: "var(--font-mono)",
                 fontSize: 11,
                 color: "var(--muted)",
-                letterSpacing: "0.1em",
+                letterSpacing: "0.06em",
                 textTransform: "uppercase",
                 marginBottom: 10,
               }}
@@ -449,23 +457,25 @@ export default function MesscribeLanding() {
             style={{
               background: "var(--ink)",
               color: "var(--bg)",
+              border: "2px solid var(--ink)",
               borderRadius: 24,
-              padding: "32px 28px",
+              padding: "40px 32px",
+              boxShadow: "6px 6px 0 var(--accent)",
               position: "relative",
             }}
           >
             <div
               style={{
                 position: "absolute",
-                top: -12,
-                right: 20,
+                top: -14,
+                right: 24,
                 background: "var(--accent-2)",
-                border: "1.5px solid var(--bg)",
+                border: "1.5px solid var(--ink)",
                 borderRadius: 999,
-                padding: "4px 10px",
+                padding: "5px 12px",
                 fontSize: 11,
                 fontWeight: 700,
-                letterSpacing: "0.04em",
+                letterSpacing: "0.06em",
                 color: "var(--ink)",
               }}
             >
@@ -476,7 +486,7 @@ export default function MesscribeLanding() {
                 fontFamily: "var(--font-mono)",
                 fontSize: 11,
                 color: "var(--accent)",
-                letterSpacing: "0.1em",
+                letterSpacing: "0.06em",
                 textTransform: "uppercase",
                 marginBottom: 10,
               }}
@@ -558,11 +568,11 @@ export default function MesscribeLanding() {
         </div>
         <h2
           style={{
-            fontSize: "clamp(44px, 9vw, 88px)",
+            fontSize: "clamp(40px, 7vw, 72px)",
             fontWeight: 800,
-            letterSpacing: "-0.045em",
+            letterSpacing: "-0.04em",
             margin: 0,
-            lineHeight: 0.9,
+            lineHeight: 0.95,
             textWrap: "balance",
           }}
         >
@@ -583,12 +593,13 @@ export default function MesscribeLanding() {
         </p>
         <button
           type="button"
+          className="cta-btn"
           style={{
             ...ctaBtn,
             marginTop: 28,
             padding: "20px 34px",
             fontSize: 18,
-            boxShadow: "6px 6px 0 var(--accent)",
+            boxShadow: "4px 4px 0 var(--ink)",
           }}
         >
           add {name} to {platform} →
@@ -657,7 +668,7 @@ export default function MesscribeLanding() {
                 style={{
                   fontFamily: "var(--font-mono)",
                   fontSize: 10,
-                  letterSpacing: "0.12em",
+                  letterSpacing: "0.06em",
                   textTransform: "uppercase",
                   color: "var(--accent)",
                   marginBottom: 12,

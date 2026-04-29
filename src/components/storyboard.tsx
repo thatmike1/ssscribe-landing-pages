@@ -35,7 +35,7 @@ function StepCaption({
             fontFamily: "var(--font-mono)",
             fontSize: 12,
             color: "var(--accent)",
-            letterSpacing: "0.14em",
+            letterSpacing: "0.06em",
             fontWeight: 700,
           }}
         >
@@ -107,7 +107,7 @@ export function Storyboard({
             style={{
               fontFamily: "var(--font-mono)",
               fontSize: 11,
-              letterSpacing: "0.14em",
+              letterSpacing: "0.06em",
               textTransform: "uppercase",
               color: "var(--accent)",
               marginBottom: 14,
@@ -117,11 +117,11 @@ export function Storyboard({
           </div>
           <h2
             style={{
-              fontSize: "clamp(48px, 10vw, 96px)",
+              fontSize: "clamp(40px, 7vw, 72px)",
               fontWeight: 800,
-              letterSpacing: "-0.05em",
+              letterSpacing: "-0.04em",
               margin: 0,
-              lineHeight: 0.9,
+              lineHeight: 0.95,
             }}
           >
             forward.

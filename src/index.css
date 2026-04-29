@@ -63,7 +63,7 @@ body {
 }
 
 body {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   background: var(--bg);
   color: var(--fg);
   -webkit-font-smoothing: antialiased;
@@ -242,6 +242,35 @@ body {
   }
   .cta-short {
     display: inline;
+  }
+}
+
+/* primary cta hover: messenger-blue at rest → deep ink on hover.
+ * also lifts the offset stamp so the button feels pressed-and-released. */
+.cta-btn:hover,
+.cta-btn:focus-visible {
+  background: var(--ink) !important;
+}
+.cta-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ghost button hover: fills with the page wash so it lifts off the bg. */
+.ghost-btn:hover,
+.ghost-btn:focus-visible {
+  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+}
+.ghost-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* nav cta on phones: bigger touch target without bloating the chrome.
+ * desktop keeps the compact shape used in the design comp. */
+@media (max-width: 640px) {
+  .cta-btn {
+    padding: 13px 18px !important;
   }
 }
 

@@ -21,8 +21,10 @@ export function PhoneFrame({
         background: "#0a0a0a",
         borderRadius: 26,
         padding: 6,
+        // hard offset stamp instead of soft drop shadow — matches the
+        // system's "no blur" rule. ink-tinted shadow reads on the dark band.
         boxShadow:
-          "0 24px 60px -20px rgba(0,0,0,0.55), 0 0 0 1.5px rgba(255,255,255,0.08) inset",
+          "6px 6px 0 rgba(255,255,255,0.08), 0 0 0 1.5px rgba(255,255,255,0.12) inset",
         position: "relative",
       }}
     >
