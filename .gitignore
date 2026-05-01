@@ -27,5 +27,6 @@ dist-ssr
 
 bun.lockb
 .playwright-cli/
+.playwright-mcp/
 .audit-screenshots/
 .claude/
