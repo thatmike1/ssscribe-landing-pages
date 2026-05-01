@@ -167,11 +167,12 @@ body {
   gap: 10px;
 }
 
-/* pricing: 2 cards side-by-side on tablet+, stacked on phones.
+/* pricing: 2 cards + an editorial margin note on tablet+, stacked on phones.
  * cap each card at ~440px so they stay confident-not-bloated on wide
  * screens — the content (price + 4 bullets) doesn't earn 700px+ widths.
- * cards left-align under the heading rather than centering, matching
- * the editorial left-aligned rhythm of the rest of the page. */
+ * the third column absorbs the right-side dead space with a zine-style
+ * annotation pointing at the paid card. cards left-align under the heading,
+ * matching the editorial left-aligned rhythm of the rest of the page. */
 .pricing-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -179,7 +180,54 @@ body {
 }
 @media (min-width: 720px) {
   .pricing-grid {
-    grid-template-columns: repeat(2, minmax(0, 440px));
+    /* trio: two cards + an editorial margin note. centered as a group so
+     * left/right margins balance instead of leaving dead space on the right. */
+    grid-template-columns:
+      minmax(0, 440px)
+      minmax(0, 440px)
+      minmax(220px, 300px);
+    justify-content: center;
+    /* default align-items: stretch — cards equalize to the taller of the two */
+  }
+}
+
+/* margin annotation — handwritten zine note in the right-side column.
+ * on mobile it stacks below the cards as a small footnote; on tablet+ it
+ * tilts, the yellow arrow appears, and the whole block reads as a deliberate
+ * editorial sidenote sitting alongside the pricing pair. */
+.pricing-note {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 280px;
+}
+.pricing-note-title {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.pricing-note-arrow {
+  display: none;
+}
+@media (min-width: 720px) {
+  .pricing-note {
+    align-self: start;
+    padding-top: 28px;
+    padding-left: 4px;
+    transform: rotate(-3deg);
+    transform-origin: top left;
+  }
+  .pricing-note-arrow {
+    display: block;
+    margin-left: -10px;
+    margin-bottom: 8px;
+    color: var(--accent-2);
   }
 }
 

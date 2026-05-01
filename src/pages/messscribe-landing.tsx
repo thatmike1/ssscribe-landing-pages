@@ -363,6 +363,7 @@ export default function MesscribeLanding() {
       </section>
 
       {/* pricing ─────────────────────────────────────────── */}
+      {/* wip: layout, copy, and pricing model are all still being figured out. */}
       <section style={{ padding: "var(--pad-y-md) var(--pad-x)" }}>
         <div
           style={{
@@ -395,6 +396,8 @@ export default function MesscribeLanding() {
               borderRadius: 24,
               padding: "40px 32px",
               boxShadow: "6px 6px 0 var(--ink)",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
             <div
@@ -455,6 +458,18 @@ export default function MesscribeLanding() {
                 ),
               )}
             </ul>
+            <p
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 12,
+                lineHeight: 1.5,
+                color: "var(--muted)",
+                margin: "auto 0 0",
+                paddingTop: 20,
+              }}
+            >
+              free will always be free. no rugpull, no surprise meter.
+            </p>
           </div>
           <div
             style={{
@@ -464,26 +479,10 @@ export default function MesscribeLanding() {
               borderRadius: 24,
               padding: "40px 32px",
               boxShadow: "6px 6px 0 var(--accent)",
-              position: "relative",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                top: -14,
-                right: 24,
-                background: "var(--accent-2)",
-                border: "1.5px solid var(--ink)",
-                borderRadius: 999,
-                padding: "5px 12px",
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.06em",
-                color: "var(--ink)",
-              }}
-            >
-              most chatty families pick this
-            </div>
             <div
               style={{
                 fontFamily: "var(--font-mono)",
@@ -509,10 +508,11 @@ export default function MesscribeLanding() {
                 style={{
                   fontSize: 22,
                   fontWeight: 600,
-                  color: "rgba(255,255,255,0.6)",
+                  color: "rgba(255,255,255,0.5)",
+                  marginLeft: 2,
                 }}
               >
-                /mo
+                ish
               </span>
             </div>
             <div
@@ -554,7 +554,46 @@ export default function MesscribeLanding() {
                 </li>
               ))}
             </ul>
+            <p
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 12,
+                lineHeight: 1.5,
+                color: "rgba(255,255,255,0.5)",
+                margin: "auto 0 0",
+                paddingTop: 20,
+              }}
+            >
+              final price depends on what this actually costs me to run. promise
+              it'll stay sssmall.
+            </p>
           </div>
+          <aside className="pricing-note" aria-label="pricing note">
+            <svg
+              className="pricing-note-arrow"
+              width="120"
+              height="58"
+              viewBox="0 0 120 58"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M 110 12 C 82 14, 46 28, 14 44"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M 14 44 L 26 38 M 14 44 L 26 52"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </svg>
+            <span className="pricing-note-title">ssstill cooking.</span>
+            these numbers might shift before launch. final pricing coming
+            sssoon-ish.
+          </aside>
         </div>
       </section>
 
