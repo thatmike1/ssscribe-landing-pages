@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 
 /**
+ * @deprecated dead code after the storyboard refactor. keep only as a short
+ * migration marker until any stale imports are cleaned up.
+ *
  * minimal phone vignette used in the storyboard. fixed 9:11 aspect, notch on
  * top, system-font status bar, and a child slot that fills the screen. not a
  * pixel-perfect ios/android frame on purpose — it's a stage, not a device.
