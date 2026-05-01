@@ -79,10 +79,29 @@ body {
 @keyframes hiss-breathe {
   0%,
   100% {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
   }
-  50% {
-    transform: scale(1.025);
+  18% {
+    transform: scale(1.03) translateY(-6px);
+  }
+  35% {
+    transform: scale(1.025) translateY(-4px);
+  }
+  85% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes hiss-drift {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(0.7deg);
+  }
+  70% {
+    transform: rotate(-0.5deg);
   }
 }
 
@@ -93,6 +112,23 @@ body {
   }
   50% {
     transform: rotate(2deg);
+  }
+}
+
+@keyframes snake-entrance {
+  from {
+    opacity: 0;
+    transform: translateX(80px) scale(0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

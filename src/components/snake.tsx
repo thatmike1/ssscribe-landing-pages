@@ -40,18 +40,28 @@ export function Snake({ size = 200, variant = "blue", className }: SnakeProps) {
   );
 }
 
-/** breathing — for the hero. subtle scale pulse. */
+/** breathing + drift — for the hero. two layered animations at different
+ *  frequencies so the combined motion never visibly repeats (~28 s cycle). */
 export function SnakeIdle({ size = 540, variant = "blue" }: SnakeProps) {
   return (
     <div
       style={{
         width: size,
         height: size,
-        animation: "hiss-breathe 3.4s ease-in-out infinite",
-        transformOrigin: "50% 70%",
+        animation: "hiss-drift 6.8s ease-in-out infinite",
+        transformOrigin: "50% 55%",
       }}
     >
-      <Snake size={size} variant={variant} />
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          animation: "hiss-breathe 4.2s ease-in-out infinite",
+          transformOrigin: "50% 70%",
+        }}
+      >
+        <Snake size={size} variant={variant} />
+      </div>
     </div>
   );
 }
