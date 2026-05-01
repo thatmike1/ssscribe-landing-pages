@@ -207,7 +207,10 @@ export default function MesscribeLanding() {
               transform: "rotate(6deg)",
             }}
           >
-            <SnakeIdle size="clamp(220px, 50vw, 540px)" variant={variant} />
+            <SnakeIdle
+              size="clamp(220px, min(100%, 50vw), 620px)"
+              variant={variant}
+            />
           </div>
         </div>
       </section>
@@ -309,7 +312,7 @@ export default function MesscribeLanding() {
       </section>
 
       {/* storyboard ──────────────────────────────────────── */}
-      <Storyboard app={app} name={name} platform={platform} />
+      <Storyboard app={app} name={name} />
 
       {/* languages ───────────────────────────────────────── */}
       <section

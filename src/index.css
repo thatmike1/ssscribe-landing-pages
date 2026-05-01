@@ -39,12 +39,18 @@
 }
 
 /*
- * fluid spacing tokens. these clamp section padding so a 320px phone gets
- * ~20px and a 1200px desktop gets the original 48–88px breathing room. one
- * token, no breakpoints, no jump at the seam.
+ * fluid spacing + content cap. --pad-x grows on wide viewports so content
+ * settles into a centered band of --content-max. on phones it stays at the
+ * clamped minimum; once the viewport exceeds the cap, the extra space turns
+ * into symmetric side margins. one variable, no wrapper divs, full-bleed
+ * backgrounds (storyboard, footer) still span edge-to-edge.
  */
 :root {
-  --pad-x: clamp(20px, 5vw, 48px);
+  --content-max: clamp(1280px, 65vw, 1480px);
+  --pad-x: max(
+    clamp(20px, 5vw, 48px),
+    calc((100% - var(--content-max)) / 2)
+  );
   --pad-y-sm: clamp(28px, 5vw, 40px);
   --pad-y-md: clamp(40px, 7vw, 56px);
   --pad-y-lg: clamp(56px, 10vw, 88px);
@@ -109,7 +115,10 @@ body {
  * stacked layout.
  */
 
-/* hero: text + snake side-by-side on desktop, stacked on mobile */
+/* hero: text + snake side-by-side on desktop, stacked on mobile.
+ * lg+ uses balanced 1fr columns so the snake fills its column up to its
+ * own clamp ceiling — closes the dead air the old fixed 540px column
+ * left between the headline and the mascot on wide viewports. */
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -118,7 +127,8 @@ body {
 }
 @media (min-width: 1024px) {
   .hero-grid {
-    grid-template-columns: 1fr 540px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 3vw, 56px);
   }
 }
 
@@ -136,56 +146,32 @@ body {
   }
 }
 
-/* storyboard rail: 3 phones across on desktop, stacked on mobile */
-.story-rail {
+/* storyboard: compact step blocks, 3-up on desktop */
+.story-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
-  position: relative;
-  z-index: 1;
+  gap: 10px;
 }
-@media (min-width: 1024px) {
-  .story-rail {
+@media (min-width: 768px) {
+  .story-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
+    gap: 10px;
   }
 }
-
-/* horizontal connector dashes only make sense when phones are in a row */
-.story-connector {
-  display: none;
-}
-@media (min-width: 1024px) {
-  .story-connector {
-    display: block;
-  }
+.story-block {
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* the thinking snake peeking out of frame 02 — desktop flourish only */
-.story-thinking-peek {
-  display: none;
-}
-@media (min-width: 1024px) {
-  .story-thinking-peek {
-    display: block;
-  }
-}
-
-/* phone frames cap their width when stacked so they don't fill a 600px column.
- * align-self centers inside the flex column parent (margin auto wouldn't). */
-.phone-cap {
-  width: 100%;
-  max-width: 320px;
-  align-self: center;
-}
-@media (min-width: 1024px) {
-  .phone-cap {
-    max-width: none;
-    align-self: stretch;
-  }
-}
-
-/* pricing: 2 cards side-by-side on tablet+, stacked on phones */
+/* pricing: 2 cards side-by-side on tablet+, stacked on phones.
+ * cap each card at ~440px so they stay confident-not-bloated on wide
+ * screens — the content (price + 4 bullets) doesn't earn 700px+ widths.
+ * cards left-align under the heading rather than centering, matching
+ * the editorial left-aligned rhythm of the rest of the page. */
 .pricing-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -193,7 +179,7 @@ body {
 }
 @media (min-width: 720px) {
   .pricing-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 440px));
   }
 }
 
