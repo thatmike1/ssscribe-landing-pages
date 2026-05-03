@@ -191,14 +191,16 @@ function useSnakeMotion(level: MotionLevel) {
           });
         }
 
-        // tongue flick — quick punch out, slow return, randomized 5-9s gap.
+        // tongue flick — quick punch out, slow return, randomized 1.5-3.5s
+        // gap. tighter cadence so the mascot reads as actively alive instead
+        // of dormant; the random jitter keeps it from feeling metronomic.
         let flickAlive = true;
         let tongueBox: DOMRect | null = null;
         if (tongue) {
           tongueBox = setSvgOrigin(tongue);
           const scheduleFlick = () => {
             if (!flickAlive) return;
-            const delay = 5 + Math.random() * 4;
+            const delay = 1.5 + Math.random() * 2;
             tweens.push(
               gsap.to(tongue, {
                 scale: 1.18,
@@ -228,24 +230,46 @@ function useSnakeMotion(level: MotionLevel) {
         // suppress unused-var lint until we wire tongueBox into a hover beat.
         void tongueBox;
 
-        // pupil cursor-tracking. xPercent on svg paths is unreliable
-        // because gsap can't measure a path's "100% width" via the css
-        // layout box. instead we shift in absolute svg user units sized
-        // from each pupil's actual bbox width. quickTo binds to a single
-        // setter; we apply per-pupil but use the same fraction so both
-        // eyes look the same direction.
-        let pupilShiftMaxX = 0;
-        let pupilShiftMaxY = 0;
+        // pupil cursor-tracking. each catchlight sits inside a dark
+        // sclera but is drawn off-center (highlight-from-above-left
+        // convention), so symmetric travel would either escape the eye
+        // in one direction or fall short in the other. dom order in
+        // snake-blue.svg places each sclera immediately before its
+        // catchlight, so we read the sibling's bbox to compute
+        // direction-specific safe travel.
         const pupilSetters = pupils.map((p) => {
           const b = p.getBBox();
-          // each pupil shifts up to ~30% of its own width in user units;
-          // a small pupil (~11 user-units wide) → ±3.3 user-units. visible
-          // but never escapes the eye-white surround.
-          pupilShiftMaxX = Math.max(pupilShiftMaxX, b.width * 0.3);
-          pupilShiftMaxY = Math.max(pupilShiftMaxY, b.height * 0.3);
+          const sclera = p.previousElementSibling;
+          const margin = 1.5; // svg user units of breathing room
+          let rightRoom = b.width * 0.5;
+          let leftRoom = b.width * 0.5;
+          let downRoom = b.height * 0.5;
+          let upRoom = b.height * 0.5;
+          if (sclera instanceof SVGGraphicsElement) {
+            const eb = sclera.getBBox();
+            rightRoom = Math.max(0, eb.x + eb.width - (b.x + b.width) - margin);
+            leftRoom = Math.max(0, b.x - eb.x - margin);
+            downRoom = Math.max(
+              0,
+              eb.y + eb.height - (b.y + b.height) - margin,
+            );
+            upRoom = Math.max(0, b.y - eb.y - margin);
+          }
+          // 0.22s tracks the cursor closely enough to feel like the
+          // snake is actively watching, while still smoothing the jitter
+          // of raw pointer events. faster than this and the eyes start
+          // to look twitchy.
+          const xSet = gsap.quickTo(p, "x", {
+            duration: 0.22,
+            ease: "power3.out",
+          });
+          const ySet = gsap.quickTo(p, "y", {
+            duration: 0.22,
+            ease: "power3.out",
+          });
           return {
-            x: gsap.quickTo(p, "x", { duration: 0.45, ease: "power3.out" }),
-            y: gsap.quickTo(p, "y", { duration: 0.45, ease: "power3.out" }),
+            x: (dx: number) => xSet(dx > 0 ? dx * rightRoom : dx * leftRoom),
+            y: (dy: number) => ySet(dy > 0 ? dy * downRoom : dy * upRoom),
           };
         });
 
@@ -280,8 +304,8 @@ function useSnakeMotion(level: MotionLevel) {
           tiltLeanX(dx * 18);
           tiltLeanY(dy * 12);
           for (const s of pupilSetters) {
-            s.x(dx * pupilShiftMaxX);
-            s.y(dy * pupilShiftMaxY);
+            s.x(dx);
+            s.y(dy);
           }
         };
 
