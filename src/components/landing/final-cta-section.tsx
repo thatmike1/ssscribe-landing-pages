@@ -1,3 +1,4 @@
+import { track } from "@vercel/analytics";
 import { Snake } from "@/components/snake";
 import { BrandButton, Section, SectionHeading } from "./primitives";
 import type { ProductConfig } from "./types";
@@ -27,7 +28,12 @@ export function FinalCtaSection({ product }: { product: ProductConfig }) {
         it's free to try, takes ten seconds to add, and works where you already
         chat.
       </p>
-      <BrandButton size="large" stamp="accent" style={{ marginTop: 28 }}>
+      <BrandButton
+        size="large"
+        stamp="accent"
+        style={{ marginTop: 28 }}
+        onClick={() => track("cta_click", { location: "final", action: "add", product: product.name })}
+      >
         add {product.name} to {product.platform} →
       </BrandButton>
     </Section>

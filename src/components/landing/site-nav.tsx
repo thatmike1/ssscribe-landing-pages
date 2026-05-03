@@ -1,3 +1,4 @@
+import { track } from "@vercel/analytics";
 import { BrandLockup } from "./brand-lockup";
 import { BrandButton } from "./primitives";
 import { navLinkStyle } from "./styles";
@@ -29,7 +30,10 @@ export function SiteNav({ product }: { product: ProductConfig }) {
             {link}
           </a>
         ))}
-        <BrandButton size="nav">
+        <BrandButton
+          size="nav"
+          onClick={() => track("cta_click", { location: "nav", action: "add", product: product.name })}
+        >
           <span className="cta-full">add to {product.platform} →</span>
           <span className="cta-short">add →</span>
         </BrandButton>

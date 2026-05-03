@@ -1,3 +1,4 @@
+import { track } from "@vercel/analytics";
 import { SnakeIdle } from "@/components/snake";
 import { BrandButton, Section, SectionHeading, StickerPill } from "./primitives";
 import type { ProductConfig } from "./types";
@@ -68,8 +69,18 @@ export function HeroSection({ product }: { product: ProductConfig }) {
               flexWrap: "wrap",
             }}
           >
-            <BrandButton stamp="accent">add to {product.platform} — free →</BrandButton>
-            <BrandButton variant="ghost">▶ watch a 20-second demo</BrandButton>
+            <BrandButton
+              stamp="accent"
+              onClick={() => track("cta_click", { location: "hero", action: "add", product: product.name })}
+            >
+              add to {product.platform} — free →
+            </BrandButton>
+            <BrandButton
+              variant="ghost"
+              onClick={() => track("cta_click", { location: "hero", action: "demo", product: product.name })}
+            >
+              ▶ watch a 20-second demo
+            </BrandButton>
             <span style={{ fontSize: 13, color: "var(--muted)", fontWeight: 500 }}>
               no sign-up. no app. just forward.
             </span>
