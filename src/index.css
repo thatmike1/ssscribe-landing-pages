@@ -77,24 +77,17 @@ body {
 }
 
 /* snake mascot motion is owned by gsap (see src/components/snake.tsx).
- * the only css the snake needs is layout glue for the inline svg and
- * fill-box origins so per-path transforms (blink, tongue flick, pupil
- * tracking) operate on each path's own bounding box rather than the
- * 1024x1024 svg canvas. */
+ * css here is just the layout glue that stretches the injected <svg>
+ * to fill its host. per-path origins (blink, tongue flick, pupil
+ * tracking) are handled in js via gsap's svgOrigin so the pivot is
+ * baked into the transform matrix in svg user units. don't add a css
+ * transform-origin to these paths — it'll stack with the gsap pivot
+ * and double-displace them. */
 .snake-svg-host > svg {
   width: 100%;
   height: 100%;
   display: block;
   overflow: visible;
-}
-/* gsap writes pixel-based transform-origin inline, which collapses to
- * "0px 0px" for svg paths because they lack a css layout box. !important
- * keeps the fill-box-relative center so blink and tongue flick scale
- * around their own visual centers, not the svg canvas origin. */
-.snake-svg-host > svg path[fill="#FFFEFE"],
-.snake-svg-host > svg path[fill="#EF6563"] {
-  transform-box: fill-box;
-  transform-origin: 50% 50% !important;
 }
 
 @keyframes typing-dot {

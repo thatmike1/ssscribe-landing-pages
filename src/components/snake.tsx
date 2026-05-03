@@ -134,54 +134,166 @@ function useSnakeMotion(level: MotionLevel) {
     animatedTargets.push(sway);
 
     if (level === "rich") {
-      // NOTE: blink, tongue flick, and pupil cursor-shift are temporarily
-      // disabled — per-path transforms fling the pupils/tongue across the
-      // canvas because gsap's pixel transform-origin and xPercent math
-      // don't compose with svg paths the way they do with html elements.
-      // see follow-up work to re-enable with svg-native math (getBBox +
-      // explicit setAttribute('transform', ...) or svgOrigin).
+      const svg = breathe.querySelector("svg");
+      if (svg) {
+        const pupils = Array.from(
+          svg.querySelectorAll<SVGPathElement>('path[fill="#FFFEFE"]'),
+        );
+        const tongue = svg.querySelector<SVGPathElement>(
+          'path[fill="#EF6563"]',
+        );
 
-      // body-level cursor tracking — head rotation + lean. these stay
-      // because they animate the wrapper div (an html element), where
-      // gsap's normal transform pipeline works perfectly.
-      const tiltRot = gsap.quickTo(tilt, "rotation", {
-        duration: 0.55,
-        ease: "power3.out",
-      });
-      const tiltLeanX = gsap.quickTo(tilt, "x", {
-        duration: 0.7,
-        ease: "power3.out",
-      });
-      const tiltLeanY = gsap.quickTo(tilt, "y", {
-        duration: 0.7,
-        ease: "power3.out",
-      });
-      animatedTargets.push(tilt);
+        // svg paths have no css layout box, so gsap's default
+        // transform-origin (top-left of svg canvas) sends scaleY-driven
+        // blinks and scale-driven flicks across the snake. computing each
+        // path's center via getBBox() and pinning it as svgOrigin tells
+        // gsap to pivot in svg user units around the path's own visual
+        // middle. this is the svg-native equivalent of fill-box origin.
+        const setSvgOrigin = (el: SVGPathElement) => {
+          const b = el.getBBox();
+          gsap.set(el, {
+            svgOrigin: `${b.x + b.width / 2} ${b.y + b.height / 2}`,
+          });
+          return b;
+        };
 
-      let rect = tilt.getBoundingClientRect();
-      const recomputeRect = () => {
-        rect = tilt.getBoundingClientRect();
-      };
+        // blink — fast scaleY collapse and recovery, randomized 4-9s gap.
+        let blinkAlive = true;
+        if (pupils.length) {
+          pupils.forEach(setSvgOrigin);
+          const scheduleBlink = () => {
+            if (!blinkAlive) return;
+            const delay = 4 + Math.random() * 5;
+            tweens.push(
+              gsap.to(pupils, {
+                scaleY: 0.06,
+                duration: 0.07,
+                ease: "power2.in",
+                delay,
+                onComplete: () => {
+                  if (!blinkAlive) return;
+                  tweens.push(
+                    gsap.to(pupils, {
+                      scaleY: 1,
+                      duration: 0.12,
+                      ease: "power2.out",
+                      onComplete: scheduleBlink,
+                    }),
+                  );
+                },
+              }),
+            );
+          };
+          scheduleBlink();
+          animatedTargets.push(...pupils);
+          cleanups.push(() => {
+            blinkAlive = false;
+          });
+        }
 
-      const clamp = (v: number) => Math.max(-1, Math.min(1, v));
-      const onMove = (e: MouseEvent) => {
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dx = clamp(((e.clientX - cx) / window.innerWidth) * 2);
-        const dy = clamp(((e.clientY - cy) / window.innerHeight) * 2);
-        tiltRot(dx * 8);
-        tiltLeanX(dx * 18);
-        tiltLeanY(dy * 12);
-      };
+        // tongue flick — quick punch out, slow return, randomized 5-9s gap.
+        let flickAlive = true;
+        let tongueBox: DOMRect | null = null;
+        if (tongue) {
+          tongueBox = setSvgOrigin(tongue);
+          const scheduleFlick = () => {
+            if (!flickAlive) return;
+            const delay = 5 + Math.random() * 4;
+            tweens.push(
+              gsap.to(tongue, {
+                scale: 1.18,
+                duration: 0.14,
+                ease: "power3.out",
+                delay,
+                onComplete: () => {
+                  if (!flickAlive) return;
+                  tweens.push(
+                    gsap.to(tongue, {
+                      scale: 1,
+                      duration: 0.32,
+                      ease: "sine.inOut",
+                      onComplete: scheduleFlick,
+                    }),
+                  );
+                },
+              }),
+            );
+          };
+          scheduleFlick();
+          animatedTargets.push(tongue);
+          cleanups.push(() => {
+            flickAlive = false;
+          });
+        }
+        // suppress unused-var lint until we wire tongueBox into a hover beat.
+        void tongueBox;
 
-      window.addEventListener("mousemove", onMove, { passive: true });
-      window.addEventListener("scroll", recomputeRect, { passive: true });
-      window.addEventListener("resize", recomputeRect);
-      cleanups.push(() => {
-        window.removeEventListener("mousemove", onMove);
-        window.removeEventListener("scroll", recomputeRect);
-        window.removeEventListener("resize", recomputeRect);
-      });
+        // pupil cursor-tracking. xPercent on svg paths is unreliable
+        // because gsap can't measure a path's "100% width" via the css
+        // layout box. instead we shift in absolute svg user units sized
+        // from each pupil's actual bbox width. quickTo binds to a single
+        // setter; we apply per-pupil but use the same fraction so both
+        // eyes look the same direction.
+        let pupilShiftMaxX = 0;
+        let pupilShiftMaxY = 0;
+        const pupilSetters = pupils.map((p) => {
+          const b = p.getBBox();
+          // each pupil shifts up to ~30% of its own width in user units;
+          // a small pupil (~11 user-units wide) → ±3.3 user-units. visible
+          // but never escapes the eye-white surround.
+          pupilShiftMaxX = Math.max(pupilShiftMaxX, b.width * 0.3);
+          pupilShiftMaxY = Math.max(pupilShiftMaxY, b.height * 0.3);
+          return {
+            x: gsap.quickTo(p, "x", { duration: 0.45, ease: "power3.out" }),
+            y: gsap.quickTo(p, "y", { duration: 0.45, ease: "power3.out" }),
+          };
+        });
+
+        // body-level cursor tracking — head rotation + lean on the html
+        // wrapper, where gsap's standard transform pipeline works fine.
+        const tiltRot = gsap.quickTo(tilt, "rotation", {
+          duration: 0.55,
+          ease: "power3.out",
+        });
+        const tiltLeanX = gsap.quickTo(tilt, "x", {
+          duration: 0.7,
+          ease: "power3.out",
+        });
+        const tiltLeanY = gsap.quickTo(tilt, "y", {
+          duration: 0.7,
+          ease: "power3.out",
+        });
+        animatedTargets.push(tilt);
+
+        let rect = tilt.getBoundingClientRect();
+        const recomputeRect = () => {
+          rect = tilt.getBoundingClientRect();
+        };
+
+        const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+        const onMove = (e: MouseEvent) => {
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dx = clamp(((e.clientX - cx) / window.innerWidth) * 2);
+          const dy = clamp(((e.clientY - cy) / window.innerHeight) * 2);
+          tiltRot(dx * 8);
+          tiltLeanX(dx * 18);
+          tiltLeanY(dy * 12);
+          for (const s of pupilSetters) {
+            s.x(dx * pupilShiftMaxX);
+            s.y(dy * pupilShiftMaxY);
+          }
+        };
+
+        window.addEventListener("mousemove", onMove, { passive: true });
+        window.addEventListener("scroll", recomputeRect, { passive: true });
+        window.addEventListener("resize", recomputeRect);
+        cleanups.push(() => {
+          window.removeEventListener("mousemove", onMove);
+          window.removeEventListener("scroll", recomputeRect);
+          window.removeEventListener("resize", recomputeRect);
+        });
+      }
     }
 
     // pause/resume when offscreen or tab-hidden so we don't burn cycles.
