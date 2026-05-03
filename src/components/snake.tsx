@@ -191,30 +191,50 @@ function useSnakeMotion(level: MotionLevel) {
           });
         }
 
-        // tongue flick — quick punch out, slow return, randomized 1.5-3.5s
-        // gap. tighter cadence so the mascot reads as actively alive instead
-        // of dormant; the random jitter keeps it from feeling metronomic.
+        // tongue flick — extend the tongue downward without the top
+        // edge ever crossing back into the mouth. trick: pivot at bbox
+        // center (setSvgOrigin), then translate down by exactly the
+        // amount scaleY would push the top up. net effect is a
+        // "hinged at the mouth" extension.
         let flickAlive = true;
-        let tongueBox: DOMRect | null = null;
         if (tongue) {
-          tongueBox = setSvgOrigin(tongue);
+          const tb = setSvgOrigin(tongue);
+          const SY = 1.5; // 50% downward extension at peak
+          const compY = ((SY - 1) * tb.height) / 2; // cancels upward push
           const scheduleFlick = () => {
             if (!flickAlive) return;
             const delay = 1.5 + Math.random() * 2;
+            // phase 1 — dart down with a small leftward tilt.
             tweens.push(
               gsap.to(tongue, {
-                scale: 1.18,
-                duration: 0.14,
-                ease: "power3.out",
                 delay,
+                scaleY: SY,
+                y: compY,
+                rotation: -4,
+                duration: 0.1,
+                ease: "power2.out",
                 onComplete: () => {
                   if (!flickAlive) return;
+                  // phase 2 — wiggle to the other side, fork-flutter beat.
                   tweens.push(
                     gsap.to(tongue, {
-                      scale: 1,
-                      duration: 0.32,
+                      rotation: 5,
+                      duration: 0.07,
                       ease: "sine.inOut",
-                      onComplete: scheduleFlick,
+                      onComplete: () => {
+                        if (!flickAlive) return;
+                        // phase 3 — retract.
+                        tweens.push(
+                          gsap.to(tongue, {
+                            scaleY: 1,
+                            y: 0,
+                            rotation: 0,
+                            duration: 0.22,
+                            ease: "power2.in",
+                            onComplete: scheduleFlick,
+                          }),
+                        );
+                      },
                     }),
                   );
                 },
@@ -227,8 +247,6 @@ function useSnakeMotion(level: MotionLevel) {
             flickAlive = false;
           });
         }
-        // suppress unused-var lint until we wire tongueBox into a hover beat.
-        void tongueBox;
 
         // pupil cursor-tracking. each catchlight sits inside a dark
         // sclera but is drawn off-center (highlight-from-above-left
