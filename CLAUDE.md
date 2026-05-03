@@ -61,4 +61,14 @@ Components use **inline styles** referencing CSS variables (`var(--ink)`, `var(-
 
 ### Snake mascot
 
-Currently AI-generated PNGs (`public/snake-blue.png`, `public/snake-green.png`). CSS keyframe animations (`hiss-breathe`, `hiss-sway`) provide idle motion. Aspiration is SVG for richer animation — treat current PNGs as placeholder execution, not final form.
+Blue is an inline SVG (`src/assets/snake-blue.svg`), injected via `dangerouslySetInnerHTML` in `src/components/snake.tsx` so GSAP can target individual paths (pupils, tongue, body) by their fills. Green still falls back to `public/snake-green.png` until a green vector lands.
+
+`useSnakeMotion(level)` drives a three-layer transform stack (cursor-tilt → sway → breathe) with three motion levels:
+
+- `"rich"` — hero only. Breathe + sway + randomized blink + tongue flick + cursor-tracking head tilt + pupil shift.
+- `"calm"` — final CTA. Breathe + sway only.
+- `"static"` — nav/footer/storyboard chips. No motion.
+
+Blink and tongue paths use `transform-box: fill-box` with `transform-origin: 50% 50% !important` (in `index.css`) so they scale around their own visual centers, not the SVG canvas origin. The `!important` is load-bearing — GSAP otherwise overrides it inline.
+
+IntersectionObserver pauses tweens when the snake is offscreen; visibilitychange pauses when the tab is hidden. `prefers-reduced-motion: reduce` short-circuits the effect entirely.

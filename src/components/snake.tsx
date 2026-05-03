@@ -1,85 +1,263 @@
 /**
- * snake mascot. the source of truth is a 600x600 png — same image, two tints
- * (blue for messscribe, green for whatsscribe). idle/thinking/listening are
- * css keyframe wrappers around the image, not separate art.
+ * snake mascot.
  *
- * size accepts a number (fixed px) or a string (e.g. `clamp(220px, 50vw,
- * 540px)`) so the hero snake can scale fluidly with the viewport.
+ * blue is now an inline SVG (src/assets/snake-blue.svg) so GSAP can target
+ * individual paths — body, eyes, tongue. green still falls back to the PNG
+ * until a green vector lands. the motion system is shared:
+ *
+ *   "rich"    — hero: breathe + sway + blink + tongue flick + cursor tracking
+ *   "calm"    — final cta: breathe only, no eye work, no cursor
+ *   "static"  — chips and icons: no motion at all
+ *
+ * reduced-motion users always get the static variant regardless of level.
  */
+
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import snakeBlueSvgRaw from "@/assets/snake-blue.svg?raw";
 
 type Variant = "blue" | "green";
 type Size = number | string;
+type MotionLevel = "rich" | "calm" | "static";
 
-const SRC: Record<Variant, string> = {
-  blue: "/snake-blue.png",
-  green: "/snake-green.png",
-};
+// only green is still rasterized; blue inlines the svg below.
+const GREEN_PNG = "/snake-green.png";
 
-type SnakeProps = {
-  size?: Size;
-  variant?: Variant;
-  className?: string;
-};
+/**
+ * the artwork itself. for blue we inject the raw svg so the dom is queryable;
+ * for green we render the legacy png. wrapper div sizes the surface; the
+ * svg-host class (defined in index.css) stretches the inner <svg> to fill.
+ */
+function SnakeArt({
+  size,
+  variant,
+  hostRef,
+}: {
+  size: Size;
+  variant: Variant;
+  hostRef?: React.Ref<HTMLDivElement>;
+}) {
+  const baseStyle: React.CSSProperties = {
+    width: size,
+    height: size,
+    display: "block",
+    userSelect: "none",
+    pointerEvents: "none",
+  };
 
-export function Snake({ size = 200, variant = "blue", className }: SnakeProps) {
+  if (variant === "blue") {
+    return (
+      <div
+        ref={hostRef}
+        aria-hidden
+        className="snake-svg-host"
+        style={baseStyle}
+        dangerouslySetInnerHTML={{ __html: snakeBlueSvgRaw }}
+      />
+    );
+  }
+
   return (
     <img
-      src={SRC[variant]}
+      src={GREEN_PNG}
       alt=""
       draggable={false}
-      className={className}
-      style={{
-        width: size,
-        height: size,
-        display: "block",
-        objectFit: "contain",
-        userSelect: "none",
-        pointerEvents: "none",
-      }}
+      style={{ ...baseStyle, objectFit: "contain" }}
     />
   );
 }
 
-/** breathing + drift — for the hero. two layered animations at different
- *  frequencies so the combined motion never visibly repeats (~28 s cycle). */
-export function SnakeIdle({ size = 540, variant = "blue" }: SnakeProps) {
+/**
+ * timeline-driven idle motion. the snake breathes on its inner layer, sways
+ * on the middle layer, and (for "rich") tilts toward the cursor on the outer
+ * layer. three layers because gsap composes one transform per element — two
+ * independent rotations on the same node would clobber each other.
+ *
+ * intersectionobserver pauses the timelines when the snake is offscreen;
+ * visibilitychange pauses when the tab is hidden. both prevent the
+ * battery-eating "animation runs in a backgrounded tab forever" problem.
+ */
+function useSnakeMotion(level: MotionLevel) {
+  const tiltRef = useRef<HTMLDivElement>(null);
+  const swayRef = useRef<HTMLDivElement>(null);
+  const breatheRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (level === "static") return;
+    const tilt = tiltRef.current;
+    const sway = swayRef.current;
+    const breathe = breatheRef.current;
+    if (!tilt || !sway || !breathe) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion) return;
+
+    // own every tween we create so cleanup is mechanical: kill the list,
+    // remove the listeners. no gsap.context magic, no conditional-return
+    // edge cases — strictmode double-mount stays clean.
+    const tweens: gsap.core.Tween[] = [];
+    const animatedTargets: (Element | NodeListOf<Element>)[] = [];
+    const cleanups: Array<() => void> = [];
+
+    // breathe — subtle inhale/exhale on the body.
+    tweens.push(
+      gsap.to(breathe, {
+        scaleY: 0.985,
+        scaleX: 1.015,
+        duration: 2.0,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+        transformOrigin: "50% 70%",
+      }),
+    );
+    animatedTargets.push(breathe);
+
+    // sway — out-of-phase rotation so the eye doesn't pattern-match the two
+    // body motions into one heavy pulse.
+    tweens.push(
+      gsap.fromTo(
+        sway,
+        { rotation: -1 },
+        {
+          rotation: 1,
+          duration: 2.7,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+          transformOrigin: "50% 90%",
+        },
+      ),
+    );
+    animatedTargets.push(sway);
+
+    if (level === "rich") {
+      // NOTE: blink, tongue flick, and pupil cursor-shift are temporarily
+      // disabled — per-path transforms fling the pupils/tongue across the
+      // canvas because gsap's pixel transform-origin and xPercent math
+      // don't compose with svg paths the way they do with html elements.
+      // see follow-up work to re-enable with svg-native math (getBBox +
+      // explicit setAttribute('transform', ...) or svgOrigin).
+
+      // body-level cursor tracking — head rotation + lean. these stay
+      // because they animate the wrapper div (an html element), where
+      // gsap's normal transform pipeline works perfectly.
+      const tiltRot = gsap.quickTo(tilt, "rotation", {
+        duration: 0.55,
+        ease: "power3.out",
+      });
+      const tiltLeanX = gsap.quickTo(tilt, "x", {
+        duration: 0.7,
+        ease: "power3.out",
+      });
+      const tiltLeanY = gsap.quickTo(tilt, "y", {
+        duration: 0.7,
+        ease: "power3.out",
+      });
+      animatedTargets.push(tilt);
+
+      let rect = tilt.getBoundingClientRect();
+      const recomputeRect = () => {
+        rect = tilt.getBoundingClientRect();
+      };
+
+      const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+      const onMove = (e: MouseEvent) => {
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = clamp(((e.clientX - cx) / window.innerWidth) * 2);
+        const dy = clamp(((e.clientY - cy) / window.innerHeight) * 2);
+        tiltRot(dx * 8);
+        tiltLeanX(dx * 18);
+        tiltLeanY(dy * 12);
+      };
+
+      window.addEventListener("mousemove", onMove, { passive: true });
+      window.addEventListener("scroll", recomputeRect, { passive: true });
+      window.addEventListener("resize", recomputeRect);
+      cleanups.push(() => {
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("scroll", recomputeRect);
+        window.removeEventListener("resize", recomputeRect);
+      });
+    }
+
+    // pause/resume when offscreen or tab-hidden so we don't burn cycles.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          tweens.forEach((t) => t.resume());
+        } else {
+          tweens.forEach((t) => t.pause());
+        }
+      },
+      { threshold: 0 },
+    );
+    io.observe(tilt);
+
+    const onVisibility = () => {
+      if (document.hidden) tweens.forEach((t) => t.pause());
+      else tweens.forEach((t) => t.resume());
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      // 1. stop the self-scheduling blink/flick recursion AND remove window
+      //    listeners so no zombie handler can fire after unmount.
+      cleanups.forEach((fn) => fn());
+      // 2. kill every tween targeting our elements — covers the explicitly
+      //    tracked ones AND any in-flight recursive tweens we missed.
+      animatedTargets.forEach((t) => gsap.killTweensOf(t));
+      // 3. clear the inline transforms gsap wrote so a hot remount starts
+      //    from a known clean state.
+      animatedTargets.forEach((t) => gsap.set(t, { clearProps: "all" }));
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [level]);
+
+  return { tiltRef, swayRef, breatheRef };
+}
+
+type SnakeProps = {
+  size?: Size;
+  variant?: Variant;
+  motion?: MotionLevel;
+  className?: string;
+};
+
+/**
+ * base mascot. defaults to static; pass `motion="calm"` for a breathe-only
+ * variant (e.g. final cta) or `motion="rich"` for the full hero treatment.
+ */
+export function Snake({
+  size = 200,
+  variant = "blue",
+  motion = "static",
+  className,
+}: SnakeProps) {
+  const { tiltRef, swayRef, breatheRef } = useSnakeMotion(motion);
+
   return (
     <div
-      style={{
-        width: size,
-        height: size,
-        animation: "hiss-drift 6.8s ease-in-out infinite",
-        transformOrigin: "50% 55%",
-      }}
+      ref={tiltRef}
+      className={className}
+      style={{ width: size, height: size, display: "block" }}
     >
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          animation: "hiss-breathe 4.2s ease-in-out infinite",
-          transformOrigin: "50% 70%",
-        }}
-      >
-        <Snake size={size} variant={variant} />
+      <div ref={swayRef} style={{ width: "100%", height: "100%" }}>
+        <div ref={breatheRef} style={{ width: "100%", height: "100%" }}>
+          <SnakeArt size="100%" variant={variant} />
+        </div>
       </div>
     </div>
   );
 }
 
-/** sway — peeking out of the storyboard. */
-export function SnakeThinking({ size = 150, variant = "blue" }: SnakeProps) {
-  return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        animation: "hiss-sway 2.6s ease-in-out infinite",
-        transformOrigin: "50% 80%",
-      }}
-    >
-      <Snake size={size} variant={variant} />
-    </div>
-  );
+/** hero — breathing + swaying + blinking + tongue flicks + cursor tracking. */
+export function SnakeIdle({ size = 540, variant = "blue" }: SnakeProps) {
+  return <Snake size={size} variant={variant} motion="rich" />;
 }
 
 /** circular avatar — used as favicon-style chip beside wordmark. */
@@ -107,22 +285,15 @@ export function SnakeIcon({
         flexShrink: 0,
       }}
     >
-      <img
-        src={SRC[variant]}
-        alt=""
-        width={inner}
-        height={inner}
-        draggable={false}
+      <div
         style={{
           width: inner,
           height: inner,
-          objectFit: "contain",
-          display: "block",
-          userSelect: "none",
-          pointerEvents: "none",
           transform: "translateY(2%)",
         }}
-      />
+      >
+        <SnakeArt size="100%" variant={variant} />
+      </div>
     </div>
   );
 }

@@ -1,36 +1,8 @@
-import { useEffect, useRef } from "react";
 import { SnakeIdle } from "@/components/snake";
 import { BrandButton, Section, SectionHeading, StickerPill } from "./primitives";
 import type { ProductConfig } from "./types";
 
-function useSnakeTilt(baseRotateDeg = 6) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (!matchMedia("(pointer: fine)").matches) return;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const onMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const nx = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth / 2)));
-      const ny = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight / 2)));
-      el.style.transform = `rotate(${baseRotateDeg}deg) translate(${nx * 16}px, ${ny * 8}px)`;
-    };
-
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
-  }, [baseRotateDeg]);
-
-  return ref;
-}
-
 export function HeroSection({ product }: { product: ProductConfig }) {
-  const snakeRef = useSnakeTilt(6);
-
   return (
     <Section
       style={{
@@ -109,27 +81,13 @@ export function HeroSection({ product }: { product: ProductConfig }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            transform: "rotate(6deg)",
           }}
         >
-          <div
-            style={{
-              animation:
-                "snake-entrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards",
-            }}
-          >
-            <div
-              ref={snakeRef}
-              style={{
-                transform: "rotate(6deg)",
-                transition: "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)",
-              }}
-            >
-              <SnakeIdle
-                size="clamp(220px, min(100%, 50vw), 620px)"
-                variant={product.variant}
-              />
-            </div>
-          </div>
+          <SnakeIdle
+            size="clamp(220px, min(100%, 50vw), 620px)"
+            variant={product.variant}
+          />
         </div>
       </div>
     </Section>

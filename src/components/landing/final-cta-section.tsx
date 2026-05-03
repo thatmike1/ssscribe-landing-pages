@@ -12,7 +12,7 @@ export function FinalCtaSection({ product }: { product: ProductConfig }) {
       }}
     >
       <div style={{ display: "inline-block", marginBottom: 18 }}>
-        <Snake size={140} variant={product.variant} />
+        <Snake size={140} variant={product.variant} motion="calm" />
       </div>
       <SectionHeading size="cta">okay, sssold?</SectionHeading>
       <p

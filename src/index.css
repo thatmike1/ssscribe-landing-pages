@@ -76,60 +76,25 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-@keyframes hiss-breathe {
-  0%,
-  100% {
-    transform: scale(1) translateY(0);
-  }
-  18% {
-    transform: scale(1.03) translateY(-6px);
-  }
-  35% {
-    transform: scale(1.025) translateY(-4px);
-  }
-  85% {
-    transform: scale(1) translateY(0);
-  }
+/* snake mascot motion is owned by gsap (see src/components/snake.tsx).
+ * the only css the snake needs is layout glue for the inline svg and
+ * fill-box origins so per-path transforms (blink, tongue flick, pupil
+ * tracking) operate on each path's own bounding box rather than the
+ * 1024x1024 svg canvas. */
+.snake-svg-host > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
 }
-
-@keyframes hiss-drift {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  30% {
-    transform: rotate(0.7deg);
-  }
-  70% {
-    transform: rotate(-0.5deg);
-  }
-}
-
-@keyframes hiss-sway {
-  0%,
-  100% {
-    transform: rotate(-2deg);
-  }
-  50% {
-    transform: rotate(2deg);
-  }
-}
-
-@keyframes snake-entrance {
-  from {
-    opacity: 0;
-    transform: translateX(80px) scale(0.92);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+/* gsap writes pixel-based transform-origin inline, which collapses to
+ * "0px 0px" for svg paths because they lack a css layout box. !important
+ * keeps the fill-box-relative center so blink and tongue flick scale
+ * around their own visual centers, not the svg canvas origin. */
+.snake-svg-host > svg path[fill="#FFFEFE"],
+.snake-svg-host > svg path[fill="#EF6563"] {
+  transform-box: fill-box;
+  transform-origin: 50% 50% !important;
 }
 
 @keyframes typing-dot {
@@ -141,6 +106,16 @@ body {
   50% {
     opacity: 1;
     transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
