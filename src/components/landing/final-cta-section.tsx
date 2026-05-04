@@ -13,9 +13,7 @@ export function FinalCtaSection({ product }: { product: ProductConfig }) {
                     border: "2px solid var(--ink)",
                     borderRadius: 28,
                     boxShadow: "8px 8px 0 var(--accent)",
-                    padding: "clamp(36px, 5vw, 56px) clamp(28px, 4vw, 48px)",
-                    maxWidth: 1040,
-                    margin: "0 auto",
+                    padding: "clamp(36px, 5vw, 56px) clamp(32px, 5vw, 64px)",
                     position: "relative",
                 }}
             >
@@ -76,7 +74,7 @@ export function FinalCtaSection({ product }: { product: ProductConfig }) {
 
                     <div className="final-cta-snake" aria-hidden="true" style={{ flexShrink: 0 }}>
                         <Snake
-                            size="clamp(160px, 22vw, 220px)"
+                            size="clamp(180px, 22vw, 280px)"
                             variant={product.variant}
                             motion="rich"
                         />

@@ -201,8 +201,8 @@ body {
 }
 @media (min-width: 720px) {
   .final-cta-grid {
-    grid-template-columns: 1fr auto;
-    gap: 40px;
+    grid-template-columns: 3fr 2fr;
+    gap: 32px;
     justify-items: start;
     text-align: left;
   }
@@ -210,6 +210,7 @@ body {
 
 /* snake hover nudge */
 .final-cta-snake {
+  justify-self: center;
   transition: transform 200ms ease;
 }
 .final-cta-card:hover .final-cta-snake {
