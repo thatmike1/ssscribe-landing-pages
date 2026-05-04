@@ -1,146 +1,210 @@
-import { CheckList, Eyebrow, Section, SectionHeading, StampedCard } from "./primitives";
+import { Eyebrow, Section, SectionHeading } from "./primitives";
+import { INK_BORDER, SHADOWS } from "./styles";
 
-const FREE_FEATURES = ["all 47 languages", "tl;dr summaries", "no account needed"] as const;
-const PAID_FEATURES = [
-  "everything in free",
-  "unlimited minutes",
-  "priority processing",
-  "support a tiny indie dev 🐍",
+const FREE_LINES = [
+    ["  20 min audio / mo", "incl."],
+    ["  47 languages", "incl."],
+    ["  tl;dr summaries", "incl."],
 ] as const;
 
-function PricingCard({
-  label,
-  price,
-  suffix,
-  description,
-  features,
-  note,
-  tone = "light",
-}: {
-  label: string;
-  price: string;
-  suffix?: string;
-  description: string;
-  features: readonly string[];
-  note: string;
-  tone?: "light" | "dark";
-}) {
-  const muted = tone === "dark" ? "rgba(255,255,255,0.7)" : "var(--muted)";
-  const noteColor = tone === "dark" ? "rgba(255,255,255,0.5)" : "var(--muted)";
+const PAID_LINES = [
+    ["  priority queue", "incl."],
+    ["  no usage cap", "incl."],
+    ["  warm fuzzies", "incl."],
+] as const;
 
-  return (
-    <StampedCard tone={tone}>
-      <Eyebrow
-        tone={tone === "dark" ? "accent" : "muted"}
-        style={{ marginBottom: 10 }}
-      >
-        {label}
-      </Eyebrow>
-      <div
-        style={{
-          fontSize: 56,
-          fontWeight: 800,
-          letterSpacing: "-0.035em",
-          lineHeight: 1,
-        }}
-      >
-        {price}
-        {suffix && (
-          <span
+const TORN_EDGE_CLIP =
+    "polygon(0 0, 100% 0, 100% calc(100% - 14px), 96% 100%, 92% calc(100% - 12px), 88% 100%, 84% calc(100% - 12px), 80% 100%, 76% calc(100% - 12px), 72% 100%, 68% calc(100% - 12px), 64% 100%, 60% calc(100% - 12px), 56% 100%, 52% calc(100% - 12px), 48% 100%, 44% calc(100% - 12px), 40% 100%, 36% calc(100% - 12px), 32% 100%, 28% calc(100% - 12px), 24% 100%, 20% calc(100% - 12px), 16% 100%, 12% calc(100% - 12px), 8% 100%, 4% calc(100% - 12px), 0 100%)";
+
+function ReceiptRow({
+    label,
+    value,
+    big = false,
+    dim = false,
+}: {
+    label: string;
+    value: string;
+    big?: boolean;
+    dim?: boolean;
+}) {
+    return (
+        <div
             style={{
-              fontSize: 22,
-              fontWeight: 600,
-              color: "rgba(255,255,255,0.5)",
-              marginLeft: 2,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "baseline",
+                padding: "10px 0",
+                borderBottom: "1px dashed rgba(10,24,64,0.18)",
+                color: dim ? "var(--muted)" : "var(--ink)",
+                fontSize: big ? 17 : 14,
+                fontWeight: big ? 700 : 500,
             }}
-          >
-            {suffix}
-          </span>
-        )}
-      </div>
-      <div style={{ fontSize: 15, color: muted, marginTop: 8, fontWeight: 500 }}>
-        {description}
-      </div>
-      <CheckList
-        items={features}
-        style={{
-          margin: "20px 0 0",
-          fontSize: 14,
-          fontWeight: 500,
-        }}
-      />
-      <p
-        style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: 12,
-          lineHeight: 1.5,
-          color: noteColor,
-          margin: "auto 0 0",
-          paddingTop: 20,
-        }}
-      >
-        {note}
-      </p>
-    </StampedCard>
-  );
+        >
+            <span>{label}</span>
+            <span>{value}</span>
+        </div>
+    );
 }
 
-function PricingNote() {
-  return (
-    <aside className="pricing-note" aria-label="pricing note">
-      <svg
-        className="pricing-note-arrow"
-        width="120"
-        height="58"
-        viewBox="0 0 120 58"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d="M 110 12 C 82 14, 46 28, 14 44"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-        <path
-          d="M 14 44 L 26 38 M 14 44 L 26 52"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-      </svg>
-      <span className="pricing-note-title">ssstill cooking.</span>
-      these numbers might shift before launch. final pricing coming sssoon-ish.
-    </aside>
-  );
+function Receipt() {
+    return (
+        <div
+            style={{
+                background: "#fffdf7",
+                border: INK_BORDER,
+                padding: "28px 28px 36px",
+                fontFamily: "var(--font-mono)",
+                boxShadow: SHADOWS.inkStamp,
+                clipPath: TORN_EDGE_CLIP,
+            }}
+        >
+            <div
+                style={{
+                    textAlign: "center",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    marginBottom: 4,
+                }}
+            >
+                messscribe
+            </div>
+            <div
+                style={{
+                    textAlign: "center",
+                    fontSize: 10,
+                    color: "var(--muted)",
+                    marginBottom: 16,
+                }}
+            >
+                order #2026-04 · thanks for forwarding
+            </div>
+
+            <div style={{ borderTop: "1px dashed var(--ink)", paddingTop: 14 }}>
+                <ReceiptRow label="free tier" value="$0.00" />
+                {FREE_LINES.map(([l, r]) => (
+                    <ReceiptRow key={l} label={l} value={r} dim />
+                ))}
+            </div>
+
+            <div
+                style={{
+                    marginTop: 18,
+                    paddingTop: 14,
+                    borderTop: "1px dashed var(--ink)",
+                }}
+            >
+                <ReceiptRow label="unlimited" value="$4.00 / mo" big />
+                {PAID_LINES.map(([l, r]) => (
+                    <ReceiptRow key={l} label={l} value={r} dim />
+                ))}
+            </div>
+
+            <div
+                style={{
+                    marginTop: 18,
+                    padding: "12px 0",
+                    borderTop: "2px solid var(--ink)",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: 18,
+                    fontWeight: 700,
+                }}
+            >
+                <span>your move</span>
+                <span style={{ color: "var(--accent)" }}>$0 — $4</span>
+            </div>
+
+            <div
+                style={{
+                    textAlign: "center",
+                    marginTop: 16,
+                    fontSize: 10,
+                    color: "var(--muted)",
+                }}
+            >
+                * cancel any time · refund mid-month · ssstill cooking
+            </div>
+        </div>
+    );
+}
+
+function Commentary() {
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 24,
+                paddingTop: 0,
+            }}
+        >
+            <div>
+                <div
+                    style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "clamp(24px, 3vw, 32px)",
+                        fontWeight: 800,
+                        letterSpacing: "-0.03em",
+                        lineHeight: 1,
+                        marginBottom: 12,
+                    }}
+                >
+                    free is a real plan.
+                </div>
+                <div
+                    style={{
+                        fontSize: 15,
+                        color: "var(--muted)",
+                        lineHeight: 1.55,
+                        fontWeight: 500,
+                    }}
+                >
+                    not a 7-day teaser. not a feature ladder. 20 minutes a month covers the average
+                    human's voice-note diet for free, forever.
+                </div>
+            </div>
+            <div>
+                <div
+                    style={{
+                        fontFamily: "var(--font-display)",
+                        fontSize: "clamp(24px, 3vw, 32px)",
+                        fontWeight: 800,
+                        letterSpacing: "-0.03em",
+                        lineHeight: 1,
+                        marginBottom: 12,
+                    }}
+                >
+                    <span style={{ color: "var(--accent)" }}>$4</span> is the indie price.
+                </div>
+                <div
+                    style={{
+                        fontSize: 15,
+                        color: "var(--muted)",
+                        lineHeight: 1.55,
+                        fontWeight: 500,
+                    }}
+                >
+                    built by one person, priced like a sandwich. unlimited because metering it would
+                    cost more than running it.
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export function PricingSection() {
-  return (
-    <Section style={{ padding: "var(--pad-y-md) var(--pad-x)" }}>
-      <Eyebrow>pricing</Eyebrow>
-      <SectionHeading style={{ margin: "0 0 28px" }}>
-        start free. stay free if you're light.
-      </SectionHeading>
-      <div className="pricing-grid">
-        <PricingCard
-          label="free forever"
-          price="$0"
-          description="20 minutes of audio per month."
-          features={FREE_FEATURES}
-          note="free will always be free. no rugpull, no surprise meter."
-        />
-        <PricingCard
-          label="unlimited"
-          price="$4"
-          suffix="ish"
-          description="transcribe and summarize as much as you want."
-          features={PAID_FEATURES}
-          note="final price depends on what this actually costs me to run. promise it'll stay sssmall."
-          tone="dark"
-        />
-        <PricingNote />
-      </div>
-    </Section>
-  );
+    return (
+        <Section style={{ padding: "var(--pad-y-md) var(--pad-x)", textAlign: "center" }}>
+            <Eyebrow>pricing · short receipt</Eyebrow>
+            <SectionHeading style={{ margin: "0 0 28px" }}>
+                two prices. one of them is zero.
+            </SectionHeading>
+            <div className="pricing-receipt-grid" style={{ textAlign: "left" }}>
+                <Receipt />
+                <Commentary />
+            </div>
+        </Section>
+    );
 }
