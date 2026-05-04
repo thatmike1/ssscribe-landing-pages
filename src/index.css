@@ -190,32 +190,6 @@ body {
   }
 }
 
-/* final CTA card: text + snake. on phones, snake sits below copy; on desktop it floats right */
-.final-cta-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-  align-items: center;
-  justify-items: center;
-  text-align: center;
-}
-@media (min-width: 720px) {
-  .final-cta-grid {
-    grid-template-columns: 3fr 2fr;
-    gap: 32px;
-    justify-items: start;
-    text-align: left;
-  }
-}
-
-/* snake hover nudge */
-.final-cta-snake {
-  justify-self: center;
-  transition: transform 200ms ease;
-}
-.final-cta-card:hover .final-cta-snake {
-  transform: rotate(-4deg) scale(1.03);
-}
 
 /* footer: 1 col → 2 col → 4 col as space allows */
 .footer-grid {

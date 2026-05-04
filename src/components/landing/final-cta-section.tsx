@@ -5,81 +5,56 @@ import type { ProductConfig } from "./types";
 
 export function FinalCtaSection({ product }: { product: ProductConfig }) {
     return (
-        <Section style={{ padding: "var(--pad-y-lg) var(--pad-x)" }}>
-            <div
-                className="final-cta-card"
+        <Section
+            style={{
+                padding: "var(--pad-y-lg) var(--pad-x)",
+                textAlign: "center",
+                position: "relative",
+            }}
+        >
+            <div style={{ display: "inline-block", marginBottom: 18 }}>
+                <Snake size={140} variant={product.variant} motion="calm" />
+            </div>
+            <Eyebrow>ten seconds, then done</Eyebrow>
+            {/* TODO: experiment with using the snake svg as one of the "s" in "sssold" */}
+            <SectionHeading size="cta">
+                okay, <span style={{ color: "var(--accent)" }}>sssold?</span>
+            </SectionHeading>
+            <p
                 style={{
-                    background: "var(--card)",
-                    border: "2px solid var(--ink)",
-                    borderRadius: 28,
-                    boxShadow: "8px 8px 0 var(--accent)",
-                    padding: "clamp(36px, 5vw, 56px) clamp(32px, 5vw, 64px)",
-                    position: "relative",
+                    fontSize: "clamp(16px, 1.8vw, 19px)",
+                    color: "var(--muted)",
+                    fontWeight: 500,
+                    maxWidth: 480,
+                    margin: "18px auto 0",
+                    lineHeight: 1.5,
                 }}
             >
-                <div className="final-cta-grid">
-                    <div>
-                        <Eyebrow>ten seconds, then done</Eyebrow>
-                        <SectionHeading size="cta" style={{ margin: 0 }}>
-                            okay,
-                            <br />
-                            <span style={{ color: "var(--accent)" }}>sssold?</span>
-                        </SectionHeading>
-                        <p
-                            style={{
-                                marginTop: 22,
-                                fontSize: "clamp(16px, 1.8vw, 19px)",
-                                color: "var(--muted)",
-                                fontWeight: 500,
-                                lineHeight: 1.5,
-                                maxWidth: 460,
-                            }}
-                        >
-                            free to try, ten seconds to add, works in the chat app you've already
-                            got open.
-                        </p>
-                        <div
-                            style={{
-                                marginTop: 28,
-                                display: "flex",
-                                gap: 14,
-                                alignItems: "center",
-                                flexWrap: "wrap",
-                            }}
-                        >
-                            <BrandButton
-                                size="large"
-                                stamp="accent"
-                                onClick={() =>
-                                    track("cta_click", {
-                                        location: "final",
-                                        action: "add",
-                                        product: product.name,
-                                    })
-                                }
-                            >
-                                add {product.name} to {product.platform} →
-                            </BrandButton>
-                            <span
-                                style={{
-                                    fontSize: 13,
-                                    color: "var(--muted)",
-                                    fontFamily: "var(--font-mono)",
-                                }}
-                            >
-                                no signup · no app · just forward
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="final-cta-snake" aria-hidden="true" style={{ flexShrink: 0 }}>
-                        <Snake
-                            size="clamp(180px, 22vw, 280px)"
-                            variant={product.variant}
-                            motion="rich"
-                        />
-                    </div>
-                </div>
+                free to try, ten seconds to add, works in the chat app you've already got open.
+            </p>
+            <BrandButton
+                size="large"
+                stamp="accent"
+                style={{ marginTop: 28 }}
+                onClick={() =>
+                    track("cta_click", {
+                        location: "final",
+                        action: "add",
+                        product: product.name,
+                    })
+                }
+            >
+                add {product.name} to {product.platform} →
+            </BrandButton>
+            <div
+                style={{
+                    marginTop: 14,
+                    fontSize: 13,
+                    color: "var(--muted)",
+                    fontFamily: "var(--font-mono)",
+                }}
+            >
+                no signup · no app · just forward
             </div>
         </Section>
     );
