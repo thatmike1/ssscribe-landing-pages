@@ -4,14 +4,17 @@ import { useEffect, useRef } from "react";
  * ink dot-grid background — zine print texture, not particle confetti.
  *
  * a fixed full-viewport canvas draws a regular grid of faint ink dots.
- * dots near the cursor swell, darken, and get nudged away with a smooth
- * falloff; clicks send an expanding ripple through the grid. dark and
- * yellow sections paint over the canvas, so the texture only shows on
- * the pale paper areas.
+ * the grid (and any click ripple) is anchored to the DOCUMENT, not the
+ * viewport — scrolling slides the dots under the cursor, so they react to
+ * a scroll exactly like they react to cursor movement. dots near the
+ * cursor swell, darken, and get nudged away with a smooth falloff; clicks
+ * send an expanding ripple through the grid. dark and yellow sections
+ * paint over the canvas, so the texture only shows on the pale paper areas.
  *
- * the rAF loop is demand-driven: it sleeps once the cursor influence and
- * ripples have settled and wakes on pointer activity. reduced-motion (and
- * touch devices, which never fire pointermove) just get the static grid.
+ * the rAF loop is demand-driven: it sleeps once cursor, scroll, and
+ * ripples have settled and wakes on pointer/scroll activity. reduced-motion
+ * (and touch devices, which never fire pointermove) get the plain texture,
+ * still scroll-anchored so it reads as printed on the page.
  */
 export function DotGridBackground() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -61,25 +64,30 @@ export function DotGridBackground() {
         };
 
         const mouse = { x: -9999, y: -9999 };
-        type Ripple = { x: number; y: number; born: number };
+        // ripples live in document coords so they stay pinned to the paper
+        // while the page scrolls under them.
+        type Ripple = { x: number; docY: number; born: number };
         let ripples: Ripple[] = [];
         let raf = 0;
         let running = false;
 
         const smoothstep = (t: number) => t * t * (3 - 2 * t);
 
-        const draw = (now: number) => {
+        const draw = (now: number, scroll: number) => {
             ctx.clearRect(0, 0, width, height);
             ripples = ripples.filter((r) => (now - r.born) / 1000 < RIPPLE_LIFE);
 
             let anyInfluence = ripples.length > 0;
             const cols = Math.ceil(width / SPACING) + 1;
-            const rows = Math.ceil(height / SPACING) + 1;
+            const rows = Math.ceil(height / SPACING) + 2;
+            // shifting rows by the scroll remainder pins the grid to the
+            // document — dots scroll with the content like printed texture.
+            const offY = ((scroll % SPACING) + SPACING) % SPACING;
 
             for (let i = 0; i < cols; i++) {
                 for (let j = 0; j < rows; j++) {
                     const gx = i * SPACING + SPACING / 2;
-                    const gy = j * SPACING + SPACING / 2;
+                    const gy = j * SPACING + SPACING / 2 - offY;
 
                     // cursor proximity: 0..1 with smooth falloff
                     const dx = gx - mouse.x;
@@ -91,7 +99,8 @@ export function DotGridBackground() {
                     for (const r of ripples) {
                         const age = (now - r.born) / 1000;
                         const ringR = age * RIPPLE_SPEED;
-                        const d = Math.abs(Math.hypot(gx - r.x, gy - r.y) - ringR);
+                        const ry = r.docY - scroll;
+                        const d = Math.abs(Math.hypot(gx - r.x, gy - ry) - ringR);
                         if (d < RIPPLE_WIDTH) {
                             const fade = 1 - age / RIPPLE_LIFE;
                             t = Math.max(t, smoothstep(1 - d / RIPPLE_WIDTH) * fade * 0.8);
@@ -119,23 +128,29 @@ export function DotGridBackground() {
             return anyInfluence;
         };
 
-        // the halo is purely positional, so a still cursor produces an
-        // identical frame — sleep then, wake on the next pointer event.
-        const lastDrawn = { x: NaN, y: NaN };
+        // halo and grid are purely positional, so a still cursor on a still
+        // page produces an identical frame — sleep then, wake on the next
+        // pointer or scroll event.
+        const lastDrawn = { x: NaN, y: NaN, scroll: NaN };
         const loop = (now: number) => {
-            const moved = lastDrawn.x !== mouse.x || lastDrawn.y !== mouse.y;
+            // read scroll per-frame: rAF outpaces scroll events, so this is
+            // what keeps the texture glued to the page during fast scrolls
+            const scroll = window.scrollY;
+            const moved =
+                lastDrawn.x !== mouse.x || lastDrawn.y !== mouse.y || lastDrawn.scroll !== scroll;
             if (ripples.length === 0 && !moved) {
                 running = false;
                 return;
             }
             lastDrawn.x = mouse.x;
             lastDrawn.y = mouse.y;
-            draw(now);
+            lastDrawn.scroll = scroll;
+            draw(now, scroll);
             raf = requestAnimationFrame(loop);
         };
 
         const wake = () => {
-            if (running || reduceMotion) return;
+            if (running) return;
             running = true;
             raf = requestAnimationFrame(loop);
         };
@@ -152,12 +167,19 @@ export function DotGridBackground() {
         };
         const onDown = (e: PointerEvent) => {
             if (reduceMotion) return;
-            ripples.push({ x: e.clientX, y: e.clientY, born: performance.now() });
+            ripples.push({
+                x: e.clientX,
+                docY: e.clientY + window.scrollY,
+                born: performance.now(),
+            });
+            wake();
+        };
+        const onScroll = () => {
             wake();
         };
         const onResize = () => {
             resize();
-            if (!running) draw(performance.now());
+            if (!running) draw(performance.now(), window.scrollY);
         };
         const onVisibility = () => {
             if (document.hidden) {
@@ -170,14 +192,17 @@ export function DotGridBackground() {
 
         readInk();
         resize();
-        draw(performance.now());
+        draw(performance.now(), window.scrollY);
 
+        // halo + ripple are pointer-driven extras; the scroll anchoring is
+        // part of the texture itself, so it stays on for reduced motion too.
         if (!reduceMotion) {
             window.addEventListener("pointermove", onMove, { passive: true });
             window.addEventListener("pointerdown", onDown, { passive: true });
             document.documentElement.addEventListener("pointerleave", onLeave);
-            document.addEventListener("visibilitychange", onVisibility);
         }
+        window.addEventListener("scroll", onScroll, { passive: true });
+        document.addEventListener("visibilitychange", onVisibility);
         window.addEventListener("resize", onResize);
 
         return () => {
@@ -185,6 +210,7 @@ export function DotGridBackground() {
             window.removeEventListener("pointermove", onMove);
             window.removeEventListener("pointerdown", onDown);
             document.documentElement.removeEventListener("pointerleave", onLeave);
+            window.removeEventListener("scroll", onScroll);
             document.removeEventListener("visibilitychange", onVisibility);
             window.removeEventListener("resize", onResize);
         };
