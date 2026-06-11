@@ -30,3 +30,8 @@ bun.lockb
 .playwright-mcp/
 .audit-screenshots/
 .claude/
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key

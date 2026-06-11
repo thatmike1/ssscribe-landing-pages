@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "ssscribe_landing_pages",
+  "project_id": "6672a790-6100-4482-b4ba-f4d3f69fe3f8"
+}
