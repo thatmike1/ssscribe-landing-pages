@@ -1,5 +1,6 @@
 import { Eyebrow, Section, SectionHeading } from "./primitives";
-import { INK_BORDER, SHADOWS } from "./styles";
+import { Reveal } from "./reveal";
+import { INK_BORDER } from "./styles";
 
 const FREE_LINES = [
     ["  20 min audio / mo", "incl."],
@@ -54,7 +55,6 @@ function Receipt() {
                 border: INK_BORDER,
                 padding: "28px 28px 36px",
                 fontFamily: "var(--font-mono)",
-                boxShadow: SHADOWS.inkStamp,
                 clipPath: TORN_EDGE_CLIP,
             }}
         >
@@ -197,14 +197,26 @@ function Commentary() {
 export function PricingSection() {
     return (
         <Section style={{ padding: "var(--pad-y-md) var(--pad-x)", textAlign: "center" }}>
-            <Eyebrow>pricing · short receipt</Eyebrow>
-            <SectionHeading style={{ margin: "0 0 28px" }}>
-                two prices. one of them is zero.
-            </SectionHeading>
-            <div className="pricing-receipt-grid" style={{ textAlign: "left" }}>
-                <Receipt />
-                <Commentary />
-            </div>
+            <Reveal>
+                <Eyebrow>pricing · short receipt</Eyebrow>
+                <SectionHeading style={{ margin: "0 0 28px" }}>
+                    two prices. one of them is zero.
+                </SectionHeading>
+                <div className="pricing-receipt-grid" style={{ textAlign: "left" }}>
+                    {/* drop-shadow (not box-shadow) so the hard offset follows
+                        the torn clip edge instead of being clipped away.
+                        slight tilt = stamped onto the page, not aligned to it. */}
+                    <div
+                        style={{
+                            filter: "drop-shadow(7px 7px 0 var(--ink))",
+                            transform: "rotate(-1.4deg)",
+                        }}
+                    >
+                        <Receipt />
+                    </div>
+                    <Commentary />
+                </div>
+            </Reveal>
         </Section>
     );
 }

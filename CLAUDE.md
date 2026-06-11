@@ -66,8 +66,12 @@ Blue is an inline SVG (`src/assets/snake-blue.svg`), injected via `dangerouslySe
 `useSnakeMotion(level)` drives a three-layer transform stack (cursor-tilt → sway → breathe) with three motion levels:
 
 - `"rich"` — hero only. Breathe + sway + randomized blink + tongue flick + cursor-tracking head tilt + pupil shift.
-- `"calm"` — final CTA. Breathe + sway only.
+- `"calm"` — final CTA (where the snake doubles as the first "s" of "sssold?"). Breathe + sway only.
 - `"static"` — nav/footer/storyboard chips. No motion.
+
+`poke` (boolean prop) makes the snake clickable — a quick squash-and-wiggle on a dedicated fourth wrapper layer so it never fights the idle tweens. Used on the hero snake (with the "psst — poke me" sticker) and the CTA snake-letter.
+
+**GSAP + inline styles gotcha:** components style everything via inline `style` attributes, and `clearProps: "all"` wipes the *entire* style attribute — React does not re-apply it without a re-render. Always clear only what GSAP touched (e.g. `clearProps: "opacity,transform"`).
 
 Blink and tongue paths use `transform-box: fill-box` with `transform-origin: 50% 50% !important` (in `index.css`) so they scale around their own visual centers, not the SVG canvas origin. The `!important` is load-bearing — GSAP otherwise overrides it inline.
 

@@ -268,13 +268,89 @@ body {
   }
 }
 
-/* language pills: bump touch target on mobile without bloating desktop */
+/* language pills: bump touch target on mobile without bloating desktop.
+ * hover gives the zine "sticker lift" — pill jumps up-left and a hard
+ * ink shadow appears where it used to sit. */
 .lang-pill {
   padding: 9px 14px;
   font-weight: 600;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+  cursor: default;
+}
+.lang-pill:hover {
+  transform: translate(-2px, -2px) rotate(-1deg);
+  box-shadow: 3px 3px 0 var(--ink);
 }
 @media (max-width: 640px) {
   .lang-pill {
     padding: 11px 14px;
   }
+}
+
+/*
+ * marquee ticker — full-bleed strip of repeating mono tokens. the track
+ * holds two identical copies of the content; sliding -50% then snapping
+ * back to 0 loops seamlessly. paused for reduced-motion users via the
+ * global animation kill-switch above.
+ */
+.marquee {
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--bg);
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  padding: 12px 0;
+  user-select: none;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 0;
+  animation: marquee-scroll 28s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+.marquee-chunk {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+.marquee-chunk > span {
+  padding: 0 18px;
+}
+.marquee-chunk > .marquee-star {
+  color: var(--accent-2);
+  padding: 0;
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/*
+ * scroll reveal — sections fade-and-rise once as they enter the viewport.
+ * the .reveal base state only applies until js marks it visible, so
+ * no-js (and reduced-motion, via the global override) still see content.
+ */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* hero snake: poke-able. the wrapper takes the click, art stays inert. */
+.snake-poke {
+  cursor: pointer;
 }

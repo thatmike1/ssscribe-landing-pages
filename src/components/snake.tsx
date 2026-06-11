@@ -29,42 +29,42 @@ const GREEN_PNG = "/snake-green.png";
  * svg-host class (defined in index.css) stretches the inner <svg> to fill.
  */
 function SnakeArt({
-  size,
-  variant,
-  hostRef,
+    size,
+    variant,
+    hostRef,
 }: {
-  size: Size;
-  variant: Variant;
-  hostRef?: React.Ref<HTMLDivElement>;
+    size: Size;
+    variant: Variant;
+    hostRef?: React.Ref<HTMLDivElement>;
 }) {
-  const baseStyle: React.CSSProperties = {
-    width: size,
-    height: size,
-    display: "block",
-    userSelect: "none",
-    pointerEvents: "none",
-  };
+    const baseStyle: React.CSSProperties = {
+        width: size,
+        height: size,
+        display: "block",
+        userSelect: "none",
+        pointerEvents: "none",
+    };
 
-  if (variant === "blue") {
+    if (variant === "blue") {
+        return (
+            <div
+                ref={hostRef}
+                aria-hidden
+                className="snake-svg-host"
+                style={baseStyle}
+                dangerouslySetInnerHTML={{ __html: snakeBlueSvgRaw }}
+            />
+        );
+    }
+
     return (
-      <div
-        ref={hostRef}
-        aria-hidden
-        className="snake-svg-host"
-        style={baseStyle}
-        dangerouslySetInnerHTML={{ __html: snakeBlueSvgRaw }}
-      />
+        <img
+            src={GREEN_PNG}
+            alt=""
+            draggable={false}
+            style={{ ...baseStyle, objectFit: "contain" }}
+        />
     );
-  }
-
-  return (
-    <img
-      src={GREEN_PNG}
-      alt=""
-      draggable={false}
-      style={{ ...baseStyle, objectFit: "contain" }}
-    />
-  );
 }
 
 /**
@@ -78,376 +78,408 @@ function SnakeArt({
  * battery-eating "animation runs in a backgrounded tab forever" problem.
  */
 function useSnakeMotion(level: MotionLevel) {
-  const tiltRef = useRef<HTMLDivElement>(null);
-  const swayRef = useRef<HTMLDivElement>(null);
-  const breatheRef = useRef<HTMLDivElement>(null);
+    const tiltRef = useRef<HTMLDivElement>(null);
+    const swayRef = useRef<HTMLDivElement>(null);
+    const breatheRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (level === "static") return;
-    const tilt = tiltRef.current;
-    const sway = swayRef.current;
-    const breathe = breatheRef.current;
-    if (!tilt || !sway || !breathe) return;
+    useEffect(() => {
+        if (level === "static") return;
+        const tilt = tiltRef.current;
+        const sway = swayRef.current;
+        const breathe = breatheRef.current;
+        if (!tilt || !sway || !breathe) return;
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reduceMotion) return;
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduceMotion) return;
 
-    // own every tween we create so cleanup is mechanical: kill the list,
-    // remove the listeners. no gsap.context magic, no conditional-return
-    // edge cases — strictmode double-mount stays clean.
-    const tweens: gsap.core.Tween[] = [];
-    const animatedTargets: (Element | NodeListOf<Element>)[] = [];
-    const cleanups: Array<() => void> = [];
+        // own every tween we create so cleanup is mechanical: kill the list,
+        // remove the listeners. no gsap.context magic, no conditional-return
+        // edge cases — strictmode double-mount stays clean.
+        const tweens: gsap.core.Tween[] = [];
+        const animatedTargets: (Element | NodeListOf<Element>)[] = [];
+        const cleanups: Array<() => void> = [];
 
-    // breathe — subtle inhale/exhale on the body.
-    tweens.push(
-      gsap.to(breathe, {
-        scaleY: 0.985,
-        scaleX: 1.015,
-        duration: 2.0,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-        transformOrigin: "50% 70%",
-      }),
-    );
-    animatedTargets.push(breathe);
-
-    // sway — out-of-phase rotation so the eye doesn't pattern-match the two
-    // body motions into one heavy pulse.
-    tweens.push(
-      gsap.fromTo(
-        sway,
-        { rotation: -1 },
-        {
-          rotation: 1,
-          duration: 2.7,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1,
-          transformOrigin: "50% 90%",
-        },
-      ),
-    );
-    animatedTargets.push(sway);
-
-    if (level === "rich") {
-      const svg = breathe.querySelector("svg");
-      if (svg) {
-        const pupils = Array.from(
-          svg.querySelectorAll<SVGPathElement>('path[fill="#FFFEFE"]'),
+        // breathe — subtle inhale/exhale on the body.
+        tweens.push(
+            gsap.to(breathe, {
+                scaleY: 0.985,
+                scaleX: 1.015,
+                duration: 2.0,
+                ease: "sine.inOut",
+                yoyo: true,
+                repeat: -1,
+                transformOrigin: "50% 70%",
+            })
         );
-        const tongue = svg.querySelector<SVGPathElement>(
-          'path[fill="#EF6563"]',
+        animatedTargets.push(breathe);
+
+        // sway — out-of-phase rotation so the eye doesn't pattern-match the two
+        // body motions into one heavy pulse.
+        tweens.push(
+            gsap.fromTo(
+                sway,
+                { rotation: -1 },
+                {
+                    rotation: 1,
+                    duration: 2.7,
+                    ease: "sine.inOut",
+                    yoyo: true,
+                    repeat: -1,
+                    transformOrigin: "50% 90%",
+                }
+            )
         );
+        animatedTargets.push(sway);
 
-        // svg paths have no css layout box, so gsap's default
-        // transform-origin (top-left of svg canvas) sends scaleY-driven
-        // blinks and scale-driven flicks across the snake. computing each
-        // path's center via getBBox() and pinning it as svgOrigin tells
-        // gsap to pivot in svg user units around the path's own visual
-        // middle. this is the svg-native equivalent of fill-box origin.
-        const setSvgOrigin = (el: SVGPathElement) => {
-          const b = el.getBBox();
-          gsap.set(el, {
-            svgOrigin: `${b.x + b.width / 2} ${b.y + b.height / 2}`,
-          });
-          return b;
-        };
+        if (level === "rich") {
+            const svg = breathe.querySelector("svg");
+            if (svg) {
+                const pupils = Array.from(
+                    svg.querySelectorAll<SVGPathElement>('path[fill="#FFFEFE"]')
+                );
+                const tongue = svg.querySelector<SVGPathElement>('path[fill="#EF6563"]');
 
-        // blink — fast scaleY collapse and recovery, randomized 4-9s gap.
-        let blinkAlive = true;
-        if (pupils.length) {
-          pupils.forEach(setSvgOrigin);
-          const scheduleBlink = () => {
-            if (!blinkAlive) return;
-            const delay = 4 + Math.random() * 5;
-            tweens.push(
-              gsap.to(pupils, {
-                scaleY: 0.06,
-                duration: 0.07,
-                ease: "power2.in",
-                delay,
-                onComplete: () => {
-                  if (!blinkAlive) return;
-                  tweens.push(
-                    gsap.to(pupils, {
-                      scaleY: 1,
-                      duration: 0.12,
-                      ease: "power2.out",
-                      onComplete: scheduleBlink,
-                    }),
-                  );
-                },
-              }),
-            );
-          };
-          scheduleBlink();
-          animatedTargets.push(...pupils);
-          cleanups.push(() => {
-            blinkAlive = false;
-          });
-        }
+                // svg paths have no css layout box, so gsap's default
+                // transform-origin (top-left of svg canvas) sends scaleY-driven
+                // blinks and scale-driven flicks across the snake. computing each
+                // path's center via getBBox() and pinning it as svgOrigin tells
+                // gsap to pivot in svg user units around the path's own visual
+                // middle. this is the svg-native equivalent of fill-box origin.
+                const setSvgOrigin = (el: SVGPathElement) => {
+                    const b = el.getBBox();
+                    gsap.set(el, {
+                        svgOrigin: `${b.x + b.width / 2} ${b.y + b.height / 2}`,
+                    });
+                    return b;
+                };
 
-        // tongue flick — extend the tongue downward without the top
-        // edge ever crossing back into the mouth. trick: pivot at bbox
-        // center (setSvgOrigin), then translate down by exactly the
-        // amount scaleY would push the top up. net effect is a
-        // "hinged at the mouth" extension.
-        let flickAlive = true;
-        if (tongue) {
-          const tb = setSvgOrigin(tongue);
-          const SY = 1.5; // 50% downward extension at peak
-          const compY = ((SY - 1) * tb.height) / 2; // cancels upward push
-          const scheduleFlick = () => {
-            if (!flickAlive) return;
-            const delay = 1.5 + Math.random() * 2;
-            // phase 1 — dart down with a small leftward tilt.
-            tweens.push(
-              gsap.to(tongue, {
-                delay,
-                scaleY: SY,
-                y: compY,
-                rotation: -4,
-                duration: 0.1,
-                ease: "power2.out",
-                onComplete: () => {
-                  if (!flickAlive) return;
-                  // phase 2 — wiggle to the other side, fork-flutter beat.
-                  tweens.push(
-                    gsap.to(tongue, {
-                      rotation: 5,
-                      duration: 0.07,
-                      ease: "sine.inOut",
-                      onComplete: () => {
-                        if (!flickAlive) return;
-                        // phase 3 — retract.
+                // blink — fast scaleY collapse and recovery, randomized 4-9s gap.
+                let blinkAlive = true;
+                if (pupils.length) {
+                    pupils.forEach(setSvgOrigin);
+                    const scheduleBlink = () => {
+                        if (!blinkAlive) return;
+                        const delay = 4 + Math.random() * 5;
                         tweens.push(
-                          gsap.to(tongue, {
-                            scaleY: 1,
-                            y: 0,
-                            rotation: 0,
-                            duration: 0.22,
-                            ease: "power2.in",
-                            onComplete: scheduleFlick,
-                          }),
+                            gsap.to(pupils, {
+                                scaleY: 0.06,
+                                duration: 0.07,
+                                ease: "power2.in",
+                                delay,
+                                onComplete: () => {
+                                    if (!blinkAlive) return;
+                                    tweens.push(
+                                        gsap.to(pupils, {
+                                            scaleY: 1,
+                                            duration: 0.12,
+                                            ease: "power2.out",
+                                            onComplete: scheduleBlink,
+                                        })
+                                    );
+                                },
+                            })
                         );
-                      },
-                    }),
-                  );
-                },
-              }),
-            );
-          };
-          scheduleFlick();
-          animatedTargets.push(tongue);
-          cleanups.push(() => {
-            flickAlive = false;
-          });
+                    };
+                    scheduleBlink();
+                    animatedTargets.push(...pupils);
+                    cleanups.push(() => {
+                        blinkAlive = false;
+                    });
+                }
+
+                // tongue flick — extend the tongue downward without the top
+                // edge ever crossing back into the mouth. trick: pivot at bbox
+                // center (setSvgOrigin), then translate down by exactly the
+                // amount scaleY would push the top up. net effect is a
+                // "hinged at the mouth" extension.
+                let flickAlive = true;
+                if (tongue) {
+                    const tb = setSvgOrigin(tongue);
+                    const SY = 1.5; // 50% downward extension at peak
+                    const compY = ((SY - 1) * tb.height) / 2; // cancels upward push
+                    const scheduleFlick = () => {
+                        if (!flickAlive) return;
+                        const delay = 1.5 + Math.random() * 2;
+                        // phase 1 — dart down with a small leftward tilt.
+                        tweens.push(
+                            gsap.to(tongue, {
+                                delay,
+                                scaleY: SY,
+                                y: compY,
+                                rotation: -4,
+                                duration: 0.1,
+                                ease: "power2.out",
+                                onComplete: () => {
+                                    if (!flickAlive) return;
+                                    // phase 2 — wiggle to the other side, fork-flutter beat.
+                                    tweens.push(
+                                        gsap.to(tongue, {
+                                            rotation: 5,
+                                            duration: 0.07,
+                                            ease: "sine.inOut",
+                                            onComplete: () => {
+                                                if (!flickAlive) return;
+                                                // phase 3 — retract.
+                                                tweens.push(
+                                                    gsap.to(tongue, {
+                                                        scaleY: 1,
+                                                        y: 0,
+                                                        rotation: 0,
+                                                        duration: 0.22,
+                                                        ease: "power2.in",
+                                                        onComplete: scheduleFlick,
+                                                    })
+                                                );
+                                            },
+                                        })
+                                    );
+                                },
+                            })
+                        );
+                    };
+                    scheduleFlick();
+                    animatedTargets.push(tongue);
+                    cleanups.push(() => {
+                        flickAlive = false;
+                    });
+                }
+
+                // pupil cursor-tracking. each catchlight sits inside a dark
+                // sclera but is drawn off-center (highlight-from-above-left
+                // convention), so symmetric travel would either escape the eye
+                // in one direction or fall short in the other. dom order in
+                // snake-blue.svg places each sclera immediately before its
+                // catchlight, so we read the sibling's bbox to compute
+                // direction-specific safe travel.
+                const pupilSetters = pupils.map((p) => {
+                    const b = p.getBBox();
+                    const sclera = p.previousElementSibling;
+                    const margin = 1.5; // svg user units of breathing room
+                    let rightRoom = b.width * 0.5;
+                    let leftRoom = b.width * 0.5;
+                    let downRoom = b.height * 0.5;
+                    let upRoom = b.height * 0.5;
+                    if (sclera instanceof SVGGraphicsElement) {
+                        const eb = sclera.getBBox();
+                        rightRoom = Math.max(0, eb.x + eb.width - (b.x + b.width) - margin);
+                        leftRoom = Math.max(0, b.x - eb.x - margin);
+                        downRoom = Math.max(0, eb.y + eb.height - (b.y + b.height) - margin);
+                        upRoom = Math.max(0, b.y - eb.y - margin);
+                    }
+                    // 0.22s tracks the cursor closely enough to feel like the
+                    // snake is actively watching, while still smoothing the jitter
+                    // of raw pointer events. faster than this and the eyes start
+                    // to look twitchy.
+                    const xSet = gsap.quickTo(p, "x", {
+                        duration: 0.22,
+                        ease: "power3.out",
+                    });
+                    const ySet = gsap.quickTo(p, "y", {
+                        duration: 0.22,
+                        ease: "power3.out",
+                    });
+                    return {
+                        x: (dx: number) => xSet(dx > 0 ? dx * rightRoom : dx * leftRoom),
+                        y: (dy: number) => ySet(dy > 0 ? dy * downRoom : dy * upRoom),
+                    };
+                });
+
+                // body-level cursor tracking — head rotation + lean on the html
+                // wrapper, where gsap's standard transform pipeline works fine.
+                const tiltRot = gsap.quickTo(tilt, "rotation", {
+                    duration: 0.55,
+                    ease: "power3.out",
+                });
+                const tiltLeanX = gsap.quickTo(tilt, "x", {
+                    duration: 0.7,
+                    ease: "power3.out",
+                });
+                const tiltLeanY = gsap.quickTo(tilt, "y", {
+                    duration: 0.7,
+                    ease: "power3.out",
+                });
+                animatedTargets.push(tilt);
+
+                let rect = tilt.getBoundingClientRect();
+                const recomputeRect = () => {
+                    rect = tilt.getBoundingClientRect();
+                };
+
+                const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+                const onMove = (e: MouseEvent) => {
+                    const cx = rect.left + rect.width / 2;
+                    const cy = rect.top + rect.height / 2;
+                    const dx = clamp(((e.clientX - cx) / window.innerWidth) * 2);
+                    const dy = clamp(((e.clientY - cy) / window.innerHeight) * 2);
+                    tiltRot(dx * 8);
+                    tiltLeanX(dx * 18);
+                    tiltLeanY(dy * 12);
+                    for (const s of pupilSetters) {
+                        s.x(dx);
+                        s.y(dy);
+                    }
+                };
+
+                window.addEventListener("mousemove", onMove, { passive: true });
+                window.addEventListener("scroll", recomputeRect, { passive: true });
+                window.addEventListener("resize", recomputeRect);
+                cleanups.push(() => {
+                    window.removeEventListener("mousemove", onMove);
+                    window.removeEventListener("scroll", recomputeRect);
+                    window.removeEventListener("resize", recomputeRect);
+                });
+            }
         }
 
-        // pupil cursor-tracking. each catchlight sits inside a dark
-        // sclera but is drawn off-center (highlight-from-above-left
-        // convention), so symmetric travel would either escape the eye
-        // in one direction or fall short in the other. dom order in
-        // snake-blue.svg places each sclera immediately before its
-        // catchlight, so we read the sibling's bbox to compute
-        // direction-specific safe travel.
-        const pupilSetters = pupils.map((p) => {
-          const b = p.getBBox();
-          const sclera = p.previousElementSibling;
-          const margin = 1.5; // svg user units of breathing room
-          let rightRoom = b.width * 0.5;
-          let leftRoom = b.width * 0.5;
-          let downRoom = b.height * 0.5;
-          let upRoom = b.height * 0.5;
-          if (sclera instanceof SVGGraphicsElement) {
-            const eb = sclera.getBBox();
-            rightRoom = Math.max(0, eb.x + eb.width - (b.x + b.width) - margin);
-            leftRoom = Math.max(0, b.x - eb.x - margin);
-            downRoom = Math.max(
-              0,
-              eb.y + eb.height - (b.y + b.height) - margin,
-            );
-            upRoom = Math.max(0, b.y - eb.y - margin);
-          }
-          // 0.22s tracks the cursor closely enough to feel like the
-          // snake is actively watching, while still smoothing the jitter
-          // of raw pointer events. faster than this and the eyes start
-          // to look twitchy.
-          const xSet = gsap.quickTo(p, "x", {
-            duration: 0.22,
-            ease: "power3.out",
-          });
-          const ySet = gsap.quickTo(p, "y", {
-            duration: 0.22,
-            ease: "power3.out",
-          });
-          return {
-            x: (dx: number) => xSet(dx > 0 ? dx * rightRoom : dx * leftRoom),
-            y: (dy: number) => ySet(dy > 0 ? dy * downRoom : dy * upRoom),
-          };
-        });
+        // pause/resume when offscreen or tab-hidden so we don't burn cycles.
+        const io = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    tweens.forEach((t) => t.resume());
+                } else {
+                    tweens.forEach((t) => t.pause());
+                }
+            },
+            { threshold: 0 }
+        );
+        io.observe(tilt);
 
-        // body-level cursor tracking — head rotation + lean on the html
-        // wrapper, where gsap's standard transform pipeline works fine.
-        const tiltRot = gsap.quickTo(tilt, "rotation", {
-          duration: 0.55,
-          ease: "power3.out",
-        });
-        const tiltLeanX = gsap.quickTo(tilt, "x", {
-          duration: 0.7,
-          ease: "power3.out",
-        });
-        const tiltLeanY = gsap.quickTo(tilt, "y", {
-          duration: 0.7,
-          ease: "power3.out",
-        });
-        animatedTargets.push(tilt);
-
-        let rect = tilt.getBoundingClientRect();
-        const recomputeRect = () => {
-          rect = tilt.getBoundingClientRect();
+        const onVisibility = () => {
+            if (document.hidden) tweens.forEach((t) => t.pause());
+            else tweens.forEach((t) => t.resume());
         };
+        document.addEventListener("visibilitychange", onVisibility);
 
-        const clamp = (v: number) => Math.max(-1, Math.min(1, v));
-        const onMove = (e: MouseEvent) => {
-          const cx = rect.left + rect.width / 2;
-          const cy = rect.top + rect.height / 2;
-          const dx = clamp(((e.clientX - cx) / window.innerWidth) * 2);
-          const dy = clamp(((e.clientY - cy) / window.innerHeight) * 2);
-          tiltRot(dx * 8);
-          tiltLeanX(dx * 18);
-          tiltLeanY(dy * 12);
-          for (const s of pupilSetters) {
-            s.x(dx);
-            s.y(dy);
-          }
+        return () => {
+            // 1. stop the self-scheduling blink/flick recursion AND remove window
+            //    listeners so no zombie handler can fire after unmount.
+            cleanups.forEach((fn) => fn());
+            // 2. kill every tween targeting our elements — covers the explicitly
+            //    tracked ones AND any in-flight recursive tweens we missed.
+            animatedTargets.forEach((t) => gsap.killTweensOf(t));
+            // 3. clear the inline transforms gsap wrote so a hot remount starts
+            //    from a known clean state.
+            animatedTargets.forEach((t) => gsap.set(t, { clearProps: "all" }));
+            io.disconnect();
+            document.removeEventListener("visibilitychange", onVisibility);
         };
+    }, [level]);
 
-        window.addEventListener("mousemove", onMove, { passive: true });
-        window.addEventListener("scroll", recomputeRect, { passive: true });
-        window.addEventListener("resize", recomputeRect);
-        cleanups.push(() => {
-          window.removeEventListener("mousemove", onMove);
-          window.removeEventListener("scroll", recomputeRect);
-          window.removeEventListener("resize", recomputeRect);
-        });
-      }
-    }
-
-    // pause/resume when offscreen or tab-hidden so we don't burn cycles.
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          tweens.forEach((t) => t.resume());
-        } else {
-          tweens.forEach((t) => t.pause());
-        }
-      },
-      { threshold: 0 },
-    );
-    io.observe(tilt);
-
-    const onVisibility = () => {
-      if (document.hidden) tweens.forEach((t) => t.pause());
-      else tweens.forEach((t) => t.resume());
-    };
-    document.addEventListener("visibilitychange", onVisibility);
-
-    return () => {
-      // 1. stop the self-scheduling blink/flick recursion AND remove window
-      //    listeners so no zombie handler can fire after unmount.
-      cleanups.forEach((fn) => fn());
-      // 2. kill every tween targeting our elements — covers the explicitly
-      //    tracked ones AND any in-flight recursive tweens we missed.
-      animatedTargets.forEach((t) => gsap.killTweensOf(t));
-      // 3. clear the inline transforms gsap wrote so a hot remount starts
-      //    from a known clean state.
-      animatedTargets.forEach((t) => gsap.set(t, { clearProps: "all" }));
-      io.disconnect();
-      document.removeEventListener("visibilitychange", onVisibility);
-    };
-  }, [level]);
-
-  return { tiltRef, swayRef, breatheRef };
+    return { tiltRef, swayRef, breatheRef };
 }
 
 type SnakeProps = {
-  size?: Size;
-  variant?: Variant;
-  motion?: MotionLevel;
-  className?: string;
+    size?: Size;
+    variant?: Variant;
+    motion?: MotionLevel;
+    poke?: boolean;
+    className?: string;
 };
 
 /**
  * base mascot. defaults to static; pass `motion="calm"` for a breathe-only
  * variant (e.g. final cta) or `motion="rich"` for the full hero treatment.
+ * `poke` makes the snake clickable — a quick indignant wiggle. it gets its
+ * own wrapper layer so the tween never fights the idle-motion layers.
  */
 export function Snake({
-  size = 200,
-  variant = "blue",
-  motion = "static",
-  className,
+    size = 200,
+    variant = "blue",
+    motion = "static",
+    poke = false,
+    className,
 }: SnakeProps) {
-  const { tiltRef, swayRef, breatheRef } = useSnakeMotion(motion);
+    const { tiltRef, swayRef, breatheRef } = useSnakeMotion(motion);
+    const pokeRef = useRef<HTMLDivElement>(null);
+    const pokeBusy = useRef(false);
 
-  return (
-    <div
-      ref={tiltRef}
-      className={className}
-      style={{ width: size, height: size, display: "block" }}
-    >
-      <div ref={swayRef} style={{ width: "100%", height: "100%" }}>
-        <div ref={breatheRef} style={{ width: "100%", height: "100%" }}>
-          <SnakeArt size="100%" variant={variant} />
+    const onPoke = () => {
+        const el = pokeRef.current;
+        if (!el || pokeBusy.current) return;
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduceMotion) return;
+        pokeBusy.current = true;
+        gsap.timeline({
+            defaults: { transformOrigin: "50% 80%" },
+            onComplete: () => {
+                pokeBusy.current = false;
+                // not "all" — it would wipe the react-authored inline sizing too.
+                gsap.set(el, { clearProps: "transform" });
+            },
+        })
+            .to(el, { scaleX: 1.06, scaleY: 0.94, duration: 0.09, ease: "power2.out" })
+            .to(el, { rotation: -5, duration: 0.09, ease: "sine.inOut" })
+            .to(el, { rotation: 4, duration: 0.11, ease: "sine.inOut" })
+            .to(el, { rotation: -2.5, duration: 0.1, ease: "sine.inOut" })
+            .to(el, {
+                rotation: 0,
+                scaleX: 1,
+                scaleY: 1,
+                duration: 0.24,
+                ease: "elastic.out(1.4, 0.5)",
+            });
+    };
+
+    return (
+        <div
+            ref={tiltRef}
+            className={
+                [className, poke ? "snake-poke" : undefined].filter(Boolean).join(" ") || undefined
+            }
+            style={{ width: size, height: size, display: "block" }}
+            onClick={poke ? onPoke : undefined}
+            role={poke ? "presentation" : undefined}
+        >
+            <div ref={pokeRef} style={{ width: "100%", height: "100%" }}>
+                <div ref={swayRef} style={{ width: "100%", height: "100%" }}>
+                    <div ref={breatheRef} style={{ width: "100%", height: "100%" }}>
+                        <SnakeArt size="100%" variant={variant} />
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 /** hero — breathing + swaying + blinking + tongue flicks + cursor tracking. */
 export function SnakeIdle({ size = 540, variant = "blue" }: SnakeProps) {
-  return <Snake size={size} variant={variant} motion="rich" />;
+    return <Snake size={size} variant={variant} motion="rich" poke />;
 }
 
 /** circular avatar — used as favicon-style chip beside wordmark. */
 export function SnakeIcon({
-  size = 36,
-  variant = "blue",
-  bg,
+    size = 36,
+    variant = "blue",
+    bg,
 }: {
-  size?: number;
-  variant?: Variant;
-  bg?: string;
+    size?: number;
+    variant?: Variant;
+    bg?: string;
 }) {
-  const inner = Math.round(size * 0.86);
-  return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        background: bg ?? "var(--ink)",
-        borderRadius: "50%",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-        flexShrink: 0,
-      }}
-    >
-      <div
-        style={{
-          width: inner,
-          height: inner,
-          transform: "translateY(2%)",
-        }}
-      >
-        <SnakeArt size="100%" variant={variant} />
-      </div>
-    </div>
-  );
+    const inner = Math.round(size * 0.86);
+    return (
+        <div
+            style={{
+                width: size,
+                height: size,
+                background: bg ?? "var(--ink)",
+                borderRadius: "50%",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+                flexShrink: 0,
+            }}
+        >
+            <div
+                style={{
+                    width: inner,
+                    height: inner,
+                    transform: "translateY(2%)",
+                }}
+            >
+                <SnakeArt size="100%" variant={variant} />
+            </div>
+        </div>
+    );
 }
