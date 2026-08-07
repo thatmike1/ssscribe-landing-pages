@@ -62,6 +62,17 @@ body {
   padding: 0;
 }
 
+/* the nav is sticky and ~86px tall, so an un-padded anchor jump lands the
+ * section heading underneath it. scroll-padding-top offsets every jump. */
+html {
+  scroll-padding-top: 96px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 *,
 *::before,
 *::after {
@@ -191,7 +202,9 @@ body {
 }
 
 
-/* footer: 1 col → 2 col → 4 col as space allows */
+/* footer: 1 col → 2 col → 3 col as space allows.
+ * brand block plus two link columns — the third column went when the entries
+ * that named unbuilt pages were cut. */
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -204,12 +217,14 @@ body {
 }
 @media (min-width: 1024px) {
   .footer-grid {
-    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    grid-template-columns: 1.4fr 1fr 1fr;
     gap: 40px;
   }
 }
 
-/* nav inline links: hidden on mobile, the CTA does the work */
+/* nav inline links: hidden on mobile, the CTA does the work.
+ * scoped to .nav-link on purpose — the CTA beside them is also an <a>, and a
+ * bare `.nav-links > a` rule would hide it exactly where it matters most. */
 .nav-links {
   display: flex;
   gap: 28px;
@@ -217,13 +232,40 @@ body {
   font-weight: 600;
   font-size: 14px;
 }
-.nav-links > a {
+.nav-links > a.nav-link {
   display: none;
 }
 @media (min-width: 768px) {
-  .nav-links > a {
+  .nav-links > a.nav-link {
     display: inline;
   }
+}
+
+/* the nav links point at in-page anchors, so they need to feel live on hover
+ * and reachable by keyboard — without this they read as dead even with hrefs. */
+.nav-link {
+  text-underline-offset: 4px;
+  transition: color 140ms ease;
+}
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.nav-link:focus-visible,
+.footer-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.footer-link {
+  transition: color 140ms ease;
+}
+.footer-link:hover,
+.footer-link:focus-visible {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* swap CTA copy on tiny screens so it never overflows the nav row */

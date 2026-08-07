@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from "react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, CSSProperties, ReactNode } from "react";
 import { DotGridBackground } from "./dot-grid-background";
 import { INK_BORDER, SHADOWS, labelStyle, titleTracking, visuallyConsistentButton } from "./styles";
 
@@ -18,16 +18,30 @@ export function PageShell({ themeClass, children }: PageShellProps) {
                 fontFamily: "var(--font-display)",
             }}
         >
-            {/* fixed canvas behind everything; sections with their own
-          background (storyboard, yellow band, footer) paint over it */}
+            {/* fixed canvas behind everything. the stacking wrapper below is
+          load-bearing: the canvas is positioned, so without its own layer
+          every non-positioned section (preview card, receipt, yolk band,
+          footer) would let the dots paint straight through. */}
             <DotGridBackground />
-            {children}
+            <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
         </div>
     );
 }
 
-export function Section({ children, style }: { children: ReactNode; style?: CSSProperties }) {
-    return <section style={style}>{children}</section>;
+export function Section({
+    children,
+    id,
+    style,
+}: {
+    children: ReactNode;
+    id?: string;
+    style?: CSSProperties;
+}) {
+    return (
+        <section id={id} style={style}>
+            {children}
+        </section>
+    );
 }
 
 export function Eyebrow({
@@ -92,21 +106,28 @@ export function SectionHeading({
     );
 }
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type BrandSurfaceProps = {
     variant?: "primary" | "ghost";
     size?: "nav" | "default" | "large";
     stamp?: "accent" | "none";
+    className?: string;
+    style?: CSSProperties;
 };
 
-export function BrandButton({
+/**
+ * the cta's look, independent of the tag that wears it. a cta that navigates
+ * has to be an <a> — right-click, middle-click, "copy link" and crawlers all
+ * depend on the href — while one that only fires a handler has to stay a
+ * <button>. splitting the visuals out keeps the two in lockstep without either
+ * component having to lie about what it is.
+ */
+function brandSurface({
     variant = "primary",
     size = "default",
     stamp = "none",
-    style,
     className,
-    children,
-    ...props
-}: ButtonProps) {
+    style,
+}: BrandSurfaceProps) {
     const padding = {
         nav: "10px 18px",
         default: variant === "ghost" ? "17px 22px" : "18px 28px",
@@ -114,26 +135,65 @@ export function BrandButton({
     }[size];
     const fontSize = { nav: 14, default: variant === "ghost" ? 15 : 17, large: 18 }[size];
 
+    return {
+        className: [variant === "primary" ? "cta-btn" : "ghost-btn", className]
+            .filter(Boolean)
+            .join(" "),
+        style: {
+            ...visuallyConsistentButton,
+            background: variant === "primary" ? "var(--accent)" : "transparent",
+            color: variant === "primary" ? "#fff" : "var(--ink)",
+            fontWeight: variant === "primary" ? 700 : 600,
+            padding,
+            fontSize,
+            boxShadow: stamp === "accent" ? SHADOWS.accentStamp : undefined,
+            ...style,
+        } satisfies CSSProperties,
+    };
+}
+
+export function BrandButton({
+    variant,
+    size,
+    stamp,
+    style,
+    className,
+    children,
+    ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & BrandSurfaceProps) {
     return (
         <button
             type="button"
-            className={[variant === "primary" ? "cta-btn" : "ghost-btn", className]
-                .filter(Boolean)
-                .join(" ")}
-            style={{
-                ...visuallyConsistentButton,
-                background: variant === "primary" ? "var(--accent)" : "transparent",
-                color: variant === "primary" ? "#fff" : "var(--ink)",
-                fontWeight: variant === "primary" ? 700 : 600,
-                padding,
-                fontSize,
-                boxShadow: stamp === "accent" ? SHADOWS.accentStamp : undefined,
-                ...style,
-            }}
             {...props}
+            {...brandSurface({ variant, size, stamp, className, style })}
         >
             {children}
         </button>
+    );
+}
+
+/** a BrandButton that navigates. external hrefs open in a new tab. */
+export function BrandLink({
+    variant,
+    size,
+    stamp,
+    style,
+    className,
+    children,
+    href,
+    ...props
+}: AnchorHTMLAttributes<HTMLAnchorElement> & BrandSurfaceProps & { href: string }) {
+    const external = /^https?:/.test(href);
+
+    return (
+        <a
+            href={href}
+            {...(external ? { target: "_blank", rel: "noopener noreferrer" } : null)}
+            {...props}
+            {...brandSurface({ variant, size, stamp, className, style })}
+        >
+            {children}
+        </a>
     );
 }
 

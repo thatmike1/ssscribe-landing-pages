@@ -1,3 +1,4 @@
+import { SECTION_IDS } from "@/lib/site";
 import { Eyebrow, Section, SectionHeading } from "./primitives";
 import { Reveal } from "./reveal";
 import { INK_BORDER } from "./styles";
@@ -196,7 +197,10 @@ function Commentary() {
 
 export function PricingSection() {
     return (
-        <Section style={{ padding: "var(--pad-y-md) var(--pad-x)", textAlign: "center" }}>
+        <Section
+            id={SECTION_IDS.pricing}
+            style={{ padding: "var(--pad-y-md) var(--pad-x)", textAlign: "center" }}
+        >
             <Reveal>
                 <Eyebrow>pricing · short receipt</Eyebrow>
                 <SectionHeading style={{ margin: "0 0 28px" }}>

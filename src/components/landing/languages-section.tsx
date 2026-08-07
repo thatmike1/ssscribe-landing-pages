@@ -1,3 +1,4 @@
+import { SECTION_IDS } from "@/lib/site";
 import { LANGUAGE_PILLS } from "@/lib/transcripts";
 import { Eyebrow, Section, SectionHeading, StickerPill } from "./primitives";
 import { Reveal } from "./reveal";
@@ -10,6 +11,7 @@ import { Reveal } from "./reveal";
 export function LanguagesSection() {
     return (
         <Section
+            id={SECTION_IDS.languages}
             style={{
                 padding: "var(--pad-y-md) var(--pad-x)",
                 background: "var(--accent-2)",

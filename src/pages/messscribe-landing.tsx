@@ -16,19 +16,23 @@ const MESSSCRIBE: ProductConfig = {
     platform: "messenger",
     variant: "blue",
     themeClass: "theme-messscribe",
+    // m.me shortlink for the bot's page — opens the conversation directly.
+    botUrl: "https://m.me/61565271402803",
 };
 
 export default function MesscribeLanding() {
     return (
         <PageShell themeClass={MESSSCRIBE.themeClass}>
             <SiteNav product={MESSSCRIBE} />
-            <HeroSection product={MESSSCRIBE} />
-            <Marquee />
-            <LivePreviewSection product={MESSSCRIBE} />
-            <Storyboard app={MESSSCRIBE.app} name={MESSSCRIBE.name} />
-            <LanguagesSection />
-            <PricingSection />
-            <FinalCtaSection product={MESSSCRIBE} />
+            <main>
+                <HeroSection product={MESSSCRIBE} />
+                <Marquee />
+                <LivePreviewSection product={MESSSCRIBE} />
+                <Storyboard app={MESSSCRIBE.app} name={MESSSCRIBE.name} />
+                <LanguagesSection />
+                <PricingSection />
+                <FinalCtaSection product={MESSSCRIBE} />
+            </main>
             <SiteFooter product={MESSSCRIBE} />
         </PageShell>
     );

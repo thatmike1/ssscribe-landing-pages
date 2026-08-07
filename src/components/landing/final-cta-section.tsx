@@ -1,6 +1,6 @@
 import { track } from "@vercel/analytics";
 import { Snake } from "@/components/snake";
-import { BrandButton, Eyebrow, Section, SectionHeading } from "./primitives";
+import { BrandLink, Eyebrow, Section, SectionHeading } from "./primitives";
 import { Reveal } from "./reveal";
 import type { ProductConfig } from "./types";
 
@@ -69,9 +69,10 @@ export function FinalCtaSection({ product }: { product: ProductConfig }) {
                 >
                     free to try, ten seconds to add, works in the chat app you've already got open.
                 </p>
-                <BrandButton
+                <BrandLink
                     size="large"
                     stamp="accent"
+                    href={product.botUrl}
                     style={{ marginTop: 28 }}
                     onClick={() =>
                         track("cta_click", {
@@ -82,7 +83,7 @@ export function FinalCtaSection({ product }: { product: ProductConfig }) {
                     }
                 >
                     add {product.name} to {product.platform} →
-                </BrandButton>
+                </BrandLink>
                 <div
                     style={{
                         marginTop: 14,

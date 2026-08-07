@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { track } from "@vercel/analytics";
 import { SnakeIdle } from "@/components/snake";
-import { BrandButton, Section, SectionHeading, StickerPill } from "./primitives";
+import { BrandLink, Section, SectionHeading, StickerPill } from "./primitives";
 import type { ProductConfig } from "./types";
 
 export function HeroSection({ product }: { product: ProductConfig }) {
@@ -111,8 +111,9 @@ export function HeroSection({ product }: { product: ProductConfig }) {
                             flexWrap: "wrap",
                         }}
                     >
-                        <BrandButton
+                        <BrandLink
                             stamp="accent"
+                            href={product.botUrl}
                             onClick={() =>
                                 track("cta_click", {
                                     location: "hero",
@@ -122,19 +123,7 @@ export function HeroSection({ product }: { product: ProductConfig }) {
                             }
                         >
                             add to {product.platform} — free →
-                        </BrandButton>
-                        <BrandButton
-                            variant="ghost"
-                            onClick={() =>
-                                track("cta_click", {
-                                    location: "hero",
-                                    action: "demo",
-                                    product: product.name,
-                                })
-                            }
-                        >
-                            ▶ watch a 20-second demo
-                        </BrandButton>
+                        </BrandLink>
                         <span style={{ fontSize: 13, color: "var(--muted)", fontWeight: 500 }}>
                             no sign-up. no app. just forward.
                         </span>
@@ -170,6 +159,8 @@ export function HeroSection({ product }: { product: ProductConfig }) {
                             variant={product.variant}
                         />
                     </div>
+                    {/* the label sits inside the snake's hit box, so without
+              pointer-events:none it swallows the very click it advertises. */}
                     <StickerPill
                         style={{
                             position: "absolute",
@@ -181,6 +172,7 @@ export function HeroSection({ product }: { product: ProductConfig }) {
                             fontWeight: 700,
                             transform: "rotate(-6deg)",
                             boxShadow: "3px 3px 0 var(--ink)",
+                            pointerEvents: "none",
                         }}
                     >
                         psst — poke me
