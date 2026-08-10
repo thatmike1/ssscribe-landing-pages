@@ -3,14 +3,38 @@
 /*
  * theme tokens. one shared shape, swapped per-platform via a class.
  * .theme-messscribe → messenger blue · .theme-whatsscribe → whatsapp green
+ *
+ * messscribe is also the :root default. the theme classes sit on a div inside
+ * #root, so anything styling an ancestor — `body { background: var(--bg) }`
+ * below — has no theme class to inherit from and would paint a bare white
+ * ground on first paint. defaulting at :root fixes that without changing the
+ * swap architecture: the classes still win by source order at equal specificity.
+ *
+ * --accent is the text/border/headline blue. --accent-strong is its darker
+ * twin, reserved for solid fills that carry white text, where --accent only
+ * reaches 3.68:1. --muted clears 4.5:1 on --bg; don't lighten it.
  */
+:root {
+  --bg: #eef4ff;
+  --fg: #0a1840;
+  --accent: #3b82f6;
+  --accent-strong: #2563eb;
+  --accent-2: #ffdc5e;
+  --ink: #0a1840;
+  --muted: #55679b;
+  --card: #ffffff;
+}
+
+/* same values as :root — kept explicit so the class stays a real theme, not a
+ * no-op that only works while messscribe happens to be the default. */
 .theme-messscribe {
   --bg: #eef4ff;
   --fg: #0a1840;
   --accent: #3b82f6;
+  --accent-strong: #2563eb;
   --accent-2: #ffdc5e;
   --ink: #0a1840;
-  --muted: #5d6f9e;
+  --muted: #55679b;
   --card: #ffffff;
 }
 
@@ -18,9 +42,10 @@
   --bg: #e9f5ec;
   --fg: #0a2a1a;
   --accent: #25d366;
+  --accent-strong: #14783c;
   --accent-2: #ffdc5e;
   --ink: #0a2a1a;
-  --muted: #5b7a64;
+  --muted: #4f6b57;
   --card: #ffffff;
 }
 
@@ -32,6 +57,7 @@
   --color-bg: var(--bg);
   --color-fg: var(--fg);
   --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
   --color-accent-2: var(--accent-2);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
@@ -311,17 +337,37 @@ body {
 }
 
 /* language pills: bump touch target on mobile without bloating desktop.
- * hover gives the zine "sticker lift" — pill jumps up-left and a hard
- * ink shadow appears where it used to sit. */
+ * deliberately no hover — these are inert spans, and the sticker-lift they
+ * used to carry was the strongest hover on the page, sitting directly above
+ * flag chips that really are buttons. the lift now lives on those instead,
+ * so "it lifts" reliably means "you can click it". */
 .lang-pill {
   padding: 9px 14px;
   font-weight: 600;
-  transition: transform 140ms ease, box-shadow 140ms ease;
   cursor: default;
 }
-.lang-pill:hover {
-  transform: translate(-2px, -2px) rotate(-1deg);
+
+/* the flag chips in the live preview — the page's only real controls. this is
+ * the sticker-lift the inert .lang-pill above gave up, so the vocabulary now
+ * tracks interactivity: it lifts, you can click it. */
+.chat-lang-chip {
+  transition: transform 140ms ease, box-shadow 140ms ease, background 160ms ease,
+    color 160ms ease;
+}
+.chat-lang-chip:hover {
+  transform: translate(-2px, -2px);
   box-shadow: 3px 3px 0 var(--ink);
+}
+.chat-lang-chip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-lang-chip,
+  .chat-lang-chip:hover {
+    transform: none;
+    transition: none;
+  }
 }
 @media (max-width: 640px) {
   .lang-pill {
@@ -395,4 +441,10 @@ body {
 /* hero snake: poke-able. the wrapper takes the click, art stays inert. */
 .snake-poke {
   cursor: pointer;
+}
+/* the poke target is a real button now, so it takes keyboard focus. match the
+ * ring the other controls use instead of falling back to the ua outline. */
+.snake-poke:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
