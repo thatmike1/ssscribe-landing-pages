@@ -142,18 +142,18 @@ function Commentary() {
             }}
         >
             <div>
-                <div
+                <h3
                     style={{
                         fontFamily: "var(--font-display)",
                         fontSize: "clamp(24px, 3vw, 32px)",
                         fontWeight: 800,
                         letterSpacing: "-0.03em",
                         lineHeight: 1,
-                        marginBottom: 12,
+                        margin: "0 0 12px",
                     }}
                 >
                     free is a real plan.
-                </div>
+                </h3>
                 <div
                     style={{
                         fontSize: 15,
@@ -167,18 +167,18 @@ function Commentary() {
                 </div>
             </div>
             <div>
-                <div
+                <h3
                     style={{
                         fontFamily: "var(--font-display)",
                         fontSize: "clamp(24px, 3vw, 32px)",
                         fontWeight: 800,
                         letterSpacing: "-0.03em",
                         lineHeight: 1,
-                        marginBottom: 12,
+                        margin: "0 0 12px",
                     }}
                 >
                     <span style={{ color: "var(--accent)" }}>$4</span> is the indie price.
-                </div>
+                </h3>
                 <div
                     style={{
                         fontSize: 15,

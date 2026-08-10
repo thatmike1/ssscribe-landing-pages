@@ -17,8 +17,10 @@ export function SiteNav({ product }: { product: ProductConfig }) {
                 position: "sticky",
                 top: 0,
                 zIndex: 10,
-                background: "color-mix(in srgb, var(--bg) 90%, transparent)",
-                backdropFilter: "blur(12px)",
+                // opaque, not frosted: the page is flat color and zero-blur
+                // offset shadows, and the hard ink border below already
+                // separates the nav from whatever scrolls under it.
+                background: "var(--bg)",
                 borderBottom: "1.5px solid var(--ink)",
             }}
         >

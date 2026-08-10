@@ -293,33 +293,3 @@ export function CheckList({
         </ul>
     );
 }
-
-export function StampedCard({
-    children,
-    tone = "light",
-    shadow = "ink",
-    style,
-}: {
-    children: ReactNode;
-    tone?: "light" | "dark";
-    shadow?: "ink" | "none";
-    style?: CSSProperties;
-}) {
-    return (
-        <div
-            style={{
-                background: tone === "dark" ? "var(--ink)" : "#fff",
-                color: tone === "dark" ? "var(--bg)" : "var(--ink)",
-                border: "2px solid var(--ink)",
-                borderRadius: 24,
-                padding: "40px 32px",
-                boxShadow: shadow === "ink" ? SHADOWS.inkStamp : undefined,
-                display: "flex",
-                flexDirection: "column",
-                ...style,
-            }}
-        >
-            {children}
-        </div>
-    );
-}

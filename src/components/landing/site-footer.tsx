@@ -58,16 +58,16 @@ export function SiteFooter({ product }: { product: ProductConfig }) {
                 </div>
                 {FOOTER_COLUMNS.map(({ heading, links }) => (
                     <div key={heading}>
-                        <div
+                        <h3
                             style={{
                                 ...labelStyle,
                                 fontSize: 10,
                                 color: "var(--accent)",
-                                marginBottom: 12,
+                                margin: "0 0 12px",
                             }}
                         >
                             {heading}
-                        </div>
+                        </h3>
                         <ul
                             style={{
                                 listStyle: "none",
