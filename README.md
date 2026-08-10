@@ -2,6 +2,8 @@
 
 **[www.ssscribe.app](https://www.ssscribe.app)** — live
 
+![The messscribe landing page: the headline "voice notes, sssuddenly readable." beside Blue, the snake mascot, coiled into an s inside a yellow disc.](docs/hero.png)
+
 Public-facing marketing pages for the **ssscribe** family — voice-note
 transcription bots that live inside messaging apps.
 
