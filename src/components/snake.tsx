@@ -78,7 +78,9 @@ function SnakeArt({
  * battery-eating "animation runs in a backgrounded tab forever" problem.
  */
 function useSnakeMotion(level: MotionLevel) {
-    const tiltRef = useRef<HTMLDivElement>(null);
+    // htmlelement, not htmldivelement: the outer layer is a <button> when the
+    // snake is pokeable and a <div> otherwise.
+    const tiltRef = useRef<HTMLElement | null>(null);
     const swayRef = useRef<HTMLDivElement>(null);
     const breatheRef = useRef<HTMLDivElement>(null);
 
@@ -373,6 +375,13 @@ type SnakeProps = {
     variant?: Variant;
     motion?: MotionLevel;
     poke?: boolean;
+    /**
+     * accessible name for the poke button. defaults to describing the easter
+     * egg, but where the snake stands in for a glyph (the "s" of "sssold?")
+     * the label has to be that glyph, or it lands mid-word in the heading's
+     * accessible name and breaks the punchline.
+     */
+    pokeLabel?: string;
     className?: string;
 };
 
@@ -387,26 +396,62 @@ export function Snake({
     variant = "blue",
     motion = "static",
     poke = false,
+    pokeLabel = "poke the snake",
     className,
 }: SnakeProps) {
     const { tiltRef, swayRef, breatheRef } = useSnakeMotion(motion);
     const pokeRef = useRef<HTMLDivElement>(null);
-    const pokeBusy = useRef(false);
+    // one owned timeline instead of a busy flag: an impatient second poke
+    // restarts the wiggle from the top rather than being silently swallowed.
+    const pokeTl = useRef<gsap.core.Timeline | null>(null);
+    const pokeReduced = useRef(false);
+
+    // kill the poke timeline on unmount so a mid-wiggle navigation leaves
+    // nothing tweening a detached node.
+    useEffect(
+        () => () => {
+            pokeTl.current?.kill();
+            pokeTl.current = null;
+        },
+        []
+    );
 
     const onPoke = () => {
         const el = pokeRef.current;
-        if (!el || pokeBusy.current) return;
+        if (!el) return;
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (reduceMotion) return;
-        pokeBusy.current = true;
-        gsap.timeline({
-            defaults: { transformOrigin: "50% 80%" },
-            onComplete: () => {
-                pokeBusy.current = false;
-                // not "all" — it would wipe the react-authored inline sizing too.
-                gsap.set(el, { clearProps: "transform" });
-            },
-        })
+
+        // rebuild if the user flipped their motion preference mid-session.
+        if (pokeTl.current && pokeReduced.current !== reduceMotion) {
+            pokeTl.current.kill();
+            pokeTl.current = null;
+        }
+        if (pokeTl.current) {
+            pokeTl.current.restart();
+            return;
+        }
+        pokeReduced.current = reduceMotion;
+
+        if (reduceMotion) {
+            // reduced motion still gets an answer — the affordance is advertised
+            // ("psst — poke me", pointer cursor), so silence would be a dead
+            // control. a brief opacity dip acknowledges the poke without moving
+            // anything, which is the part reduced-motion users opted out of.
+            pokeTl.current = gsap
+                .timeline({
+                    // not "all" — it would wipe the react-authored inline sizing too.
+                    onComplete: () => gsap.set(el, { clearProps: "opacity" }),
+                })
+                .to(el, { opacity: 0.45, duration: 0.1, ease: "none" })
+                .to(el, { opacity: 1, duration: 0.18, ease: "none" });
+            return;
+        }
+
+        pokeTl.current = gsap
+            .timeline({
+                defaults: { transformOrigin: "50% 80%" },
+                onComplete: () => gsap.set(el, { clearProps: "transform" }),
+            })
             .to(el, { scaleX: 1.06, scaleY: 0.94, duration: 0.09, ease: "power2.out" })
             .to(el, { rotation: -5, duration: 0.09, ease: "sine.inOut" })
             .to(el, { rotation: 4, duration: 0.11, ease: "sine.inOut" })
@@ -420,23 +465,55 @@ export function Snake({
             });
     };
 
-    return (
-        <div
-            ref={tiltRef}
-            className={
-                [className, poke ? "snake-poke" : undefined].filter(Boolean).join(" ") || undefined
-            }
-            style={{ width: size, height: size, display: "block" }}
-            onClick={poke ? onPoke : undefined}
-            role={poke ? "presentation" : undefined}
-        >
-            <div ref={pokeRef} style={{ width: "100%", height: "100%" }}>
-                <div ref={swayRef} style={{ width: "100%", height: "100%" }}>
-                    <div ref={breatheRef} style={{ width: "100%", height: "100%" }}>
-                        <SnakeArt size="100%" variant={variant} />
-                    </div>
+    const wrapperClass =
+        [className, poke ? "snake-poke" : undefined].filter(Boolean).join(" ") || undefined;
+    const layers = (
+        <div ref={pokeRef} style={{ width: "100%", height: "100%" }}>
+            <div ref={swayRef} style={{ width: "100%", height: "100%" }}>
+                <div ref={breatheRef} style={{ width: "100%", height: "100%" }}>
+                    <SnakeArt size="100%" variant={variant} />
                 </div>
             </div>
+        </div>
+    );
+
+    // pokeable snakes are a real control: a <button> gets keyboard focus, enter
+    // and space, and a name — all of which onClick on a div threw away.
+    if (poke) {
+        return (
+            <button
+                type="button"
+                aria-label={pokeLabel}
+                ref={(el) => {
+                    tiltRef.current = el;
+                }}
+                className={wrapperClass}
+                style={{
+                    width: size,
+                    height: size,
+                    display: "block",
+                    background: "none",
+                    border: 0,
+                    padding: 0,
+                    font: "inherit",
+                    color: "inherit",
+                }}
+                onClick={onPoke}
+            >
+                {layers}
+            </button>
+        );
+    }
+
+    return (
+        <div
+            ref={(el) => {
+                tiltRef.current = el;
+            }}
+            className={wrapperClass}
+            style={{ width: size, height: size, display: "block" }}
+        >
+            {layers}
         </div>
     );
 }

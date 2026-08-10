@@ -51,7 +51,16 @@ export function FinalCtaSection({ product }: { product: ProductConfig }) {
                                     height: "1.32em",
                                 }}
                             >
-                                <Snake size="100%" variant={product.variant} motion="calm" poke />
+                                {/* the poke button's name doubles as the letter
+                                    it replaces — without it the heading's
+                                    accessible name reads "okay, ssold?". */}
+                                <Snake
+                                    size="100%"
+                                    variant={product.variant}
+                                    motion="calm"
+                                    poke
+                                    pokeLabel="s"
+                                />
                             </span>
                         </span>
                         ssold?
