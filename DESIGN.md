@@ -222,28 +222,58 @@ the zine's stickers. language pills, feature tags, the "live preview" badge.
   "live preview" eyebrow.
 
 ### Cards
-pricing cards and the chat preview frame. substantial, bordered, grounded.
+the chat preview frame and the storyboard mockups. substantial, bordered,
+grounded.
 
 - **Corner Style:** generously rounded (24px radius)
 - **Background:** clean-white
 - **Border:** 2px solid var(--ink). always present.
 - **Shadow:** ink stamp (6px 6px 0 var(--ink)) on key cards. not every card
   gets a shadow; borders alone provide baseline separation.
-- **Internal Padding:** generous (40px 32px on pricing cards). components
-  inside cards fill the space rather than leaving emptiness.
+- **Internal Padding:** generous. components inside cards fill the space
+  rather than leaving emptiness.
+
+### Receipt (signature)
+pricing is not a card grid — it's a single printed receipt, tilted and
+stamped onto the page, with editorial commentary set beside it.
+
+- **Paper:** warm off-white (#fffdf7) against the page ground, 1.5px ink
+  border, everything set in Space Mono. it should read as a thing that came
+  out of a till, not a plan comparison.
+- **Torn edge:** a `clip-path` polygon chews the bottom edge into a rough
+  tear. because clipping would eat a `box-shadow`, the ink stamp is applied
+  as `drop-shadow(7px 7px 0 var(--ink))` on a wrapper, so the hard offset
+  follows the tear.
+- **Tilt:** ~1.4deg rotation on the same wrapper. stamped onto the page, not
+  aligned to it.
+- **Rows:** label left, value right, separated by dashed hairlines. free tier
+  and paid tier are two blocks on one slip; the total line is the only place
+  accent color appears.
+- **Commentary:** display-weight headings plus body copy in the adjacent
+  column, arguing the prices rather than tabulating them.
 
 ### Navigation
 sticky, minimal, functional.
 
-- **Style:** transparent background with backdrop blur on scroll. wordmark +
-  text links + cta button.
+- **Style:** opaque page-ground background — no blur, no transparency (see
+  the blur rule in Don'ts). wordmark + text links + cta button.
 - **Typography:** body weight for links, display font.
 - **Mobile:** links hidden below 768px, cta button always visible.
 
-### Phone Frame (signature)
-minimal phone vignette used in the storyboard section. 9:11 aspect ratio,
-subtle notch, status bar with time/battery. rounded outer frame (26px) with
-inner screen (22px). contains storyboard step content.
+### Storyboard blocks (signature)
+the how-it-works section inverts: ink background, page-ground text, three
+numbered blocks reading forward / wait / read.
+
+- **Numbering:** two-digit mono index in accent, set on the baseline of a
+  display-weight step title.
+- **Mockup panel:** a translucent white wash (6% over the ink ground) with a
+  12px radius, holding a miniature of the actual chat moment — a voice-note
+  bubble, a typing indicator with the language-detection line, a transcript
+  plus tl;dr pair. no device chrome; the panel is the stage.
+- **Type ramp:** mockup text scales *up* as the viewport narrows, since the
+  blocks stack below 768px and a phone gives each one more width than the
+  desktop three-up layout does.
+- **Caption:** one line of muted body copy under each panel.
 
 ### Wordmark (signature)
 the `messscribe` / `whatsscribe` text with the `sss` substring painted in
