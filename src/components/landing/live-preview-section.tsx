@@ -12,7 +12,10 @@ const PREVIEW_BULLETS = [
 
 export function LivePreviewSection({ product }: { product: ProductConfig }) {
     return (
-        <Section style={{ padding: "var(--pad-y-md) var(--pad-x) var(--pad-y-lg)" }}>
+        <Section
+            label="live demo"
+            style={{ padding: "var(--pad-y-md) var(--pad-x) var(--pad-y-lg)" }}
+        >
             <div className="preview-grid">
                 <Reveal>
                     <Eyebrow>live preview · click a flag</Eyebrow>

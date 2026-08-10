@@ -12,6 +12,7 @@ export function LanguagesSection() {
     return (
         <Section
             id={SECTION_IDS.languages}
+            label="supported languages"
             style={{
                 padding: "var(--pad-y-md) var(--pad-x)",
                 background: "var(--accent-2)",

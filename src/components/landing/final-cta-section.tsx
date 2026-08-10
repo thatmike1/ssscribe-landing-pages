@@ -7,6 +7,7 @@ import type { ProductConfig } from "./types";
 export function FinalCtaSection({ product }: { product: ProductConfig }) {
     return (
         <Section
+            label="get started"
             style={{
                 padding: "var(--pad-y-lg) var(--pad-x)",
                 textAlign: "center",

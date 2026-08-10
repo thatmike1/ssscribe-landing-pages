@@ -199,6 +199,7 @@ export function PricingSection() {
     return (
         <Section
             id={SECTION_IDS.pricing}
+            label="pricing"
             style={{ padding: "var(--pad-y-md) var(--pad-x)", textAlign: "center" }}
         >
             <Reveal>

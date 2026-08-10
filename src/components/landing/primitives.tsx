@@ -7,6 +7,12 @@ type PageShellProps = {
     children: ReactNode;
 };
 
+/**
+ * the app's outermost element. `themeClass` scopes the theme to this subtree;
+ * the same class is authored on <html> in `index.html` so the document ground
+ * behind this div — first paint, overscroll gutters — matches. keep the two in
+ * sync when adding a product.
+ */
 export function PageShell({ themeClass, children }: PageShellProps) {
     return (
         <div
@@ -28,17 +34,24 @@ export function PageShell({ themeClass, children }: PageShellProps) {
     );
 }
 
+/**
+ * a page section. `label` names the landmark for assistive tech — a bare
+ * <section> is not a region at all without one, so every section that a screen
+ * reader should be able to jump to passes it.
+ */
 export function Section({
     children,
     id,
+    label,
     style,
 }: {
     children: ReactNode;
     id?: string;
+    label?: string;
     style?: CSSProperties;
 }) {
     return (
-        <section id={id} style={style}>
+        <section id={id} aria-label={label} style={style}>
             {children}
         </section>
     );
