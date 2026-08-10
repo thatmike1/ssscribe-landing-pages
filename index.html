@@ -1,5 +1,14 @@
 <!doctype html>
-<html lang="en">
+<!--
+  the theme class lives on <html> so every ancestor of the app — <html>, <body>,
+  the overscroll gutters, the paint that happens before react mounts — resolves
+  the same tokens the content does. it has to be authored here, in the served
+  markup: applying it from an effect would put the untinted flash back.
+
+  it pairs with `ProductConfig.themeClass`, which puts the same class on the
+  PageShell wrapper. one product per html entry, and the two must agree.
+-->
+<html lang="en" class="theme-messscribe">
   <head>
     <meta charset="UTF-8" />
     <meta
