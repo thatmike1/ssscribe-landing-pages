@@ -4,6 +4,14 @@ import { VoiceWaveform } from "./voice-waveform";
 
 type App = "messenger" | "whatsapp";
 
+/* mockup type scales *up* as the viewport narrows: the three cards stack below 768px, so a phone
+ * has width the desktop three-up layout does not. each ramp hits its legibility floor at 390px and
+ * its original desktop size at 1024px, so wide viewports look unchanged. */
+const MOCK_TEXT = "clamp(9px, 12.23px - 0.315vw, 11px)"; // bubble text, chips, transcript lines
+const MOCK_META = "clamp(8px, 12.85px - 0.473vw, 11px)"; // "typing…", detected-language line
+const MOCK_LABEL = "clamp(7px, 11.85px - 0.473vw, 10px)"; // uppercase micro-eyebrows
+const MOCK_GLYPH = "clamp(7px, 10.23px - 0.315vw, 9px)"; // ▶ inside the play dot
+
 export function Storyboard({ app, name }: { app: App; name: string }) {
     const isWA = app === "whatsapp";
     const userBubble = isWA ? "#d9fdd3" : "#0084ff";
@@ -61,15 +69,16 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                         >
                             01
                         </span>
-                        <span
+                        <h3
                             style={{
                                 fontSize: 22,
                                 fontWeight: 800,
                                 letterSpacing: "-0.03em",
+                                margin: 0,
                             }}
                         >
                             forward
-                        </span>
+                        </h3>
                     </div>
                     <div
                         style={{
@@ -91,7 +100,7 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                                     display: "flex",
                                     alignItems: "center",
                                     gap: 5,
-                                    fontSize: 9,
+                                    fontSize: MOCK_TEXT,
                                 }}
                             >
                                 <span
@@ -105,7 +114,7 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                                         display: "inline-flex",
                                         alignItems: "center",
                                         justifyContent: "center",
-                                        fontSize: 7,
+                                        fontSize: MOCK_GLYPH,
                                     }}
                                 >
                                     ▶
@@ -118,7 +127,7 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                             style={{
                                 display: "flex",
                                 gap: 4,
-                                fontSize: 9,
+                                fontSize: MOCK_TEXT,
                                 fontWeight: 600,
                             }}
                         >
@@ -135,7 +144,7 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                             <span
                                 style={{
                                     background: "rgba(255,255,255,0.1)",
-                                    color: "rgba(255,255,255,0.5)",
+                                    color: "rgba(255,255,255,0.7)",
                                     borderRadius: 6,
                                     padding: "3px 8px",
                                 }}
@@ -167,15 +176,16 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                         >
                             02
                         </span>
-                        <span
+                        <h3
                             style={{
                                 fontSize: 22,
                                 fontWeight: 800,
                                 letterSpacing: "-0.03em",
+                                margin: 0,
                             }}
                         >
                             wait
-                        </span>
+                        </h3>
                     </div>
                     <div
                         style={{
@@ -197,14 +207,14 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                             }}
                         >
                             <SnakeIcon size={18} variant={variant} />
-                            <span style={{ fontSize: 9, fontWeight: 700, color: "#fff" }}>
+                            <span style={{ fontSize: MOCK_TEXT, fontWeight: 700, color: "#fff" }}>
                                 {name}
                             </span>
                             <span
                                 style={{
                                     marginLeft: "auto",
-                                    fontSize: 8,
-                                    color: "rgba(255,255,255,0.4)",
+                                    fontSize: MOCK_META,
+                                    color: "rgba(255,255,255,0.6)",
                                     fontFamily: "var(--font-mono)",
                                 }}
                             >
@@ -228,7 +238,7 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                         <div
                             style={{
                                 fontFamily: "var(--font-mono)",
-                                fontSize: 8,
+                                fontSize: MOCK_META,
                                 color: "var(--accent)",
                                 letterSpacing: "0.05em",
                             }}
@@ -259,15 +269,16 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                         >
                             03
                         </span>
-                        <span
+                        <h3
                             style={{
                                 fontSize: 22,
                                 fontWeight: 800,
                                 letterSpacing: "-0.03em",
+                                margin: 0,
                             }}
                         >
                             read
-                        </span>
+                        </h3>
                     </div>
                     <div
                         style={{
@@ -284,14 +295,14 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                                 background: "rgba(255,255,255,0.9)",
                                 borderRadius: 10,
                                 padding: "8px 9px",
-                                fontSize: 9,
+                                fontSize: MOCK_TEXT,
                                 color: "#1a1a1a",
                                 lineHeight: 1.4,
                             }}
                         >
                             <div
                                 style={{
-                                    fontSize: 7,
+                                    fontSize: MOCK_LABEL,
                                     fontWeight: 800,
                                     color: "var(--ink)",
                                     letterSpacing: "0.06em",
@@ -308,7 +319,7 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                                 background: "var(--accent)",
                                 borderRadius: 10,
                                 padding: "8px 9px",
-                                fontSize: 9,
+                                fontSize: MOCK_TEXT,
                                 color: "var(--ink)",
                                 lineHeight: 1.35,
                                 border: "1.5px solid var(--ink)",
@@ -316,7 +327,7 @@ export function Storyboard({ app, name }: { app: App; name: string }) {
                         >
                             <div
                                 style={{
-                                    fontSize: 7,
+                                    fontSize: MOCK_LABEL,
                                     fontWeight: 800,
                                     letterSpacing: "0.08em",
                                     textTransform: "uppercase",
