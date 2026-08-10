@@ -139,44 +139,65 @@ export function HeroSection({ product }: { product: ProductConfig }) {
                         justifyContent: "center",
                     }}
                 >
-                    {/* yolk sticker grounds the snake on the page instead of letting
-              it float in the wash. plain circle — the snake is the shape. */}
+                    {/* the yolk is a real square box in flow, not an absolute
+              overlay — it owns the column's height so the circle and its
+              ink shadow can never bleed onto the cta row or the marquee.
+              snake and sticker are absolute *inside* it, so every piece
+              of the composition scales off one base. */}
                     <div
-                        aria-hidden
                         style={{
-                            position: "absolute",
+                            position: "relative",
                             width: "min(82%, 500px)",
                             aspectRatio: "1",
-                            borderRadius: "50%",
-                            background: "var(--accent-2)",
-                            border: "2px solid var(--ink)",
-                            boxShadow: "12px 12px 0 var(--ink)",
-                        }}
-                    />
-                    <div style={{ position: "relative", transform: "rotate(6deg)" }}>
-                        <SnakeIdle
-                            size="clamp(220px, min(100%, 44vw), 560px)"
-                            variant={product.variant}
-                        />
-                    </div>
-                    {/* the label sits inside the snake's hit box, so without
-              pointer-events:none it swallows the very click it advertises. */}
-                    <StickerPill
-                        style={{
-                            position: "absolute",
-                            bottom: "6%",
-                            right: "10%",
-                            padding: "5px 12px",
-                            fontFamily: "var(--font-mono)",
-                            fontSize: 11,
-                            fontWeight: 700,
-                            transform: "rotate(-6deg)",
-                            boxShadow: "3px 3px 0 var(--ink)",
-                            pointerEvents: "none",
                         }}
                     >
-                        psst — poke me
-                    </StickerPill>
+                        {/* yolk sticker grounds the snake on the page instead of
+                  letting it float in the wash. plain circle — the snake
+                  is the shape. */}
+                        <div
+                            aria-hidden
+                            style={{
+                                position: "absolute",
+                                inset: 0,
+                                borderRadius: "50%",
+                                background: "var(--accent-2)",
+                                border: "2px solid var(--ink)",
+                                boxShadow: "12px 12px 0 var(--ink)",
+                            }}
+                        />
+                        {/* 112% of the yolk — the overhang that reads as intentional
+                  at 1440, now held constant at every width. */}
+                        <div
+                            style={{
+                                position: "absolute",
+                                inset: 0,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                transform: "rotate(6deg)",
+                            }}
+                        >
+                            <SnakeIdle size="112%" variant={product.variant} />
+                        </div>
+                        {/* the label sits inside the snake's hit box, so without
+                  pointer-events:none it swallows the very click it advertises. */}
+                        <StickerPill
+                            style={{
+                                position: "absolute",
+                                bottom: "6%",
+                                right: "10%",
+                                padding: "5px 12px",
+                                fontFamily: "var(--font-mono)",
+                                fontSize: 11,
+                                fontWeight: 700,
+                                transform: "rotate(-6deg)",
+                                boxShadow: "3px 3px 0 var(--ink)",
+                                pointerEvents: "none",
+                            }}
+                        >
+                            psst — poke me
+                        </StickerPill>
+                    </div>
                 </div>
             </div>
         </Section>
