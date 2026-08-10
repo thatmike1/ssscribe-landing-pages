@@ -25,7 +25,7 @@ export function HeroSection({ product }: { product: ProductConfig }) {
                     // never "all" — these components style via inline styles,
                     // and clearProps:"all" wipes the whole style attribute.
                     clearProps: "opacity,transform",
-                })
+                }),
             );
         }
         if (artRef.current) {
@@ -39,7 +39,7 @@ export function HeroSection({ product }: { product: ProductConfig }) {
                     ease: "back.out(1.6)",
                     transformOrigin: "50% 60%",
                     clearProps: "opacity,transform",
-                })
+                }),
             );
         }
         return () => tweens.forEach((t) => t.kill());

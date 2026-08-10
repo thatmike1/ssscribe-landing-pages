@@ -111,7 +111,7 @@ function useSnakeMotion(level: MotionLevel) {
                 yoyo: true,
                 repeat: -1,
                 transformOrigin: "50% 70%",
-            })
+            }),
         );
         animatedTargets.push(breathe);
 
@@ -128,8 +128,8 @@ function useSnakeMotion(level: MotionLevel) {
                     yoyo: true,
                     repeat: -1,
                     transformOrigin: "50% 90%",
-                }
-            )
+                },
+            ),
         );
         animatedTargets.push(sway);
 
@@ -137,7 +137,7 @@ function useSnakeMotion(level: MotionLevel) {
             const svg = breathe.querySelector("svg");
             if (svg) {
                 const pupils = Array.from(
-                    svg.querySelectorAll<SVGPathElement>('path[fill="#FFFEFE"]')
+                    svg.querySelectorAll<SVGPathElement>('path[fill="#FFFEFE"]'),
                 );
                 const tongue = svg.querySelector<SVGPathElement>('path[fill="#EF6563"]');
 
@@ -176,10 +176,10 @@ function useSnakeMotion(level: MotionLevel) {
                                             duration: 0.12,
                                             ease: "power2.out",
                                             onComplete: scheduleBlink,
-                                        })
+                                        }),
                                     );
                                 },
-                            })
+                            }),
                         );
                     };
                     scheduleBlink();
@@ -230,13 +230,13 @@ function useSnakeMotion(level: MotionLevel) {
                                                         duration: 0.22,
                                                         ease: "power2.in",
                                                         onComplete: scheduleFlick,
-                                                    })
+                                                    }),
                                                 );
                                             },
-                                        })
+                                        }),
                                     );
                                 },
-                            })
+                            }),
                         );
                     };
                     scheduleFlick();
@@ -342,7 +342,7 @@ function useSnakeMotion(level: MotionLevel) {
                     tweens.forEach((t) => t.pause());
                 }
             },
-            { threshold: 0 }
+            { threshold: 0 },
         );
         io.observe(tilt);
 
@@ -413,7 +413,7 @@ export function Snake({
             pokeTl.current?.kill();
             pokeTl.current = null;
         },
-        []
+        [],
     );
 
     const onPoke = () => {

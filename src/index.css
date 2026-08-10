@@ -15,53 +15,53 @@
  * reaches 3.68:1. --muted clears 4.5:1 on --bg; don't lighten it.
  */
 :root {
-  --bg: #eef4ff;
-  --fg: #0a1840;
-  --accent: #3b82f6;
-  --accent-strong: #2563eb;
-  --accent-2: #ffdc5e;
-  --ink: #0a1840;
-  --muted: #55679b;
-  --card: #ffffff;
+    --bg: #eef4ff;
+    --fg: #0a1840;
+    --accent: #3b82f6;
+    --accent-strong: #2563eb;
+    --accent-2: #ffdc5e;
+    --ink: #0a1840;
+    --muted: #55679b;
+    --card: #ffffff;
 }
 
 /* same values as :root — kept explicit so the class stays a real theme, not a
  * no-op that only works while messscribe happens to be the default. */
 .theme-messscribe {
-  --bg: #eef4ff;
-  --fg: #0a1840;
-  --accent: #3b82f6;
-  --accent-strong: #2563eb;
-  --accent-2: #ffdc5e;
-  --ink: #0a1840;
-  --muted: #55679b;
-  --card: #ffffff;
+    --bg: #eef4ff;
+    --fg: #0a1840;
+    --accent: #3b82f6;
+    --accent-strong: #2563eb;
+    --accent-2: #ffdc5e;
+    --ink: #0a1840;
+    --muted: #55679b;
+    --card: #ffffff;
 }
 
 .theme-whatsscribe {
-  --bg: #e9f5ec;
-  --fg: #0a2a1a;
-  --accent: #25d366;
-  --accent-strong: #14783c;
-  --accent-2: #ffdc5e;
-  --ink: #0a2a1a;
-  --muted: #4f6b57;
-  --card: #ffffff;
+    --bg: #e9f5ec;
+    --fg: #0a2a1a;
+    --accent: #25d366;
+    --accent-strong: #14783c;
+    --accent-2: #ffdc5e;
+    --ink: #0a2a1a;
+    --muted: #4f6b57;
+    --card: #ffffff;
 }
 
 @theme inline {
-  --font-display: "Bricolage Grotesque", "Inter", sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "Space Mono", ui-monospace, monospace;
+    --font-display: "Bricolage Grotesque", "Inter", sans-serif;
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-mono: "Space Mono", ui-monospace, monospace;
 
-  --color-bg: var(--bg);
-  --color-fg: var(--fg);
-  --color-accent: var(--accent);
-  --color-accent-strong: var(--accent-strong);
-  --color-accent-2: var(--accent-2);
-  --color-ink: var(--ink);
-  --color-muted: var(--muted);
-  --color-card: var(--card);
+    --color-bg: var(--bg);
+    --color-fg: var(--fg);
+    --color-accent: var(--accent);
+    --color-accent-strong: var(--accent-strong);
+    --color-accent-2: var(--accent-2);
+    --color-ink: var(--ink);
+    --color-muted: var(--muted);
+    --color-card: var(--card);
 }
 
 /*
@@ -72,45 +72,42 @@
  * backgrounds (storyboard, footer) still span edge-to-edge.
  */
 :root {
-  --content-max: clamp(1280px, 65vw, 1480px);
-  --pad-x: max(
-    clamp(20px, 5vw, 48px),
-    calc((100% - var(--content-max)) / 2)
-  );
-  --pad-y-sm: clamp(28px, 5vw, 40px);
-  --pad-y-md: clamp(40px, 7vw, 56px);
-  --pad-y-lg: clamp(56px, 10vw, 88px);
+    --content-max: clamp(1280px, 65vw, 1480px);
+    --pad-x: max(clamp(20px, 5vw, 48px), calc((100% - var(--content-max)) / 2));
+    --pad-y-sm: clamp(28px, 5vw, 40px);
+    --pad-y-md: clamp(40px, 7vw, 56px);
+    --pad-y-lg: clamp(56px, 10vw, 88px);
 }
 
 html,
 body {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 /* the nav is sticky and ~86px tall, so an un-padded anchor jump lands the
  * section heading underneath it. scroll-padding-top offsets every jump. */
 html {
-  scroll-padding-top: 96px;
+    scroll-padding-top: 96px;
 }
 @media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
+    html {
+        scroll-behavior: smooth;
+    }
 }
 
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: var(--font-sans);
-  background: var(--bg);
-  color: var(--fg);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
 /* snake mascot motion is owned by gsap (see src/components/snake.tsx).
@@ -121,32 +118,32 @@ body {
  * transform-origin to these paths — it'll stack with the gsap pivot
  * and double-displace them. */
 .snake-svg-host > svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  overflow: visible;
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
 }
 
 @keyframes typing-dot {
-  0%,
-  100% {
-    opacity: 0.35;
-    transform: translateY(0);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-2px);
-  }
+    0%,
+    100% {
+        opacity: 0.35;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 /*
@@ -161,179 +158,178 @@ body {
  * own clamp ceiling — closes the dead air the old fixed 540px column
  * left between the headline and the mascot on wide viewports. */
 .hero-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-  align-items: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
 }
 @media (min-width: 1024px) {
-  .hero-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(32px, 3vw, 56px);
-  }
+    .hero-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: clamp(32px, 3vw, 56px);
+    }
 }
 
 /* live preview: text + chat side-by-side on desktop */
 .preview-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-  align-items: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
 }
 @media (min-width: 1024px) {
-  .preview-grid {
-    grid-template-columns: 0.9fr 1.1fr;
-    gap: 40px;
-  }
+    .preview-grid {
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 40px;
+    }
 }
 
 /* storyboard: compact step blocks, 3-up on desktop */
 .story-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
 }
 @media (min-width: 768px) {
-  .story-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
+    .story-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
 }
 .story-block {
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  border-radius: 18px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 /* receipt pricing: ledger + commentary side-by-side on tablet+, stacked on phones.
  * centered as a unit so neither side hugs the edge on wide viewports.
  * commentary vertically centers against the taller receipt. */
 .pricing-receipt-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-  align-items: start;
-  max-width: 920px;
-  margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: start;
+    max-width: 920px;
+    margin: 0 auto;
 }
 @media (min-width: 720px) {
-  .pricing-receipt-grid {
-    grid-template-columns: minmax(320px, 480px) minmax(280px, 1fr);
-    gap: 48px;
-    align-items: center;
-  }
+    .pricing-receipt-grid {
+        grid-template-columns: minmax(320px, 480px) minmax(280px, 1fr);
+        gap: 48px;
+        align-items: center;
+    }
 }
-
 
 /* footer: 1 col → 2 col → 3 col as space allows.
  * brand block plus two link columns — the third column went when the entries
  * that named unbuilt pages were cut. */
 .footer-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 28px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
 }
 @media (min-width: 560px) {
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 @media (min-width: 1024px) {
-  .footer-grid {
-    grid-template-columns: 1.4fr 1fr 1fr;
-    gap: 40px;
-  }
+    .footer-grid {
+        grid-template-columns: 1.4fr 1fr 1fr;
+        gap: 40px;
+    }
 }
 
 /* nav inline links: hidden on mobile, the CTA does the work.
  * scoped to .nav-link on purpose — the CTA beside them is also an <a>, and a
  * bare `.nav-links > a` rule would hide it exactly where it matters most. */
 .nav-links {
-  display: flex;
-  gap: 28px;
-  align-items: center;
-  font-weight: 600;
-  font-size: 14px;
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    font-weight: 600;
+    font-size: 14px;
 }
 .nav-links > a.nav-link {
-  display: none;
+    display: none;
 }
 @media (min-width: 768px) {
-  .nav-links > a.nav-link {
-    display: inline;
-  }
+    .nav-links > a.nav-link {
+        display: inline;
+    }
 }
 
 /* the nav links point at in-page anchors, so they need to feel live on hover
  * and reachable by keyboard — without this they read as dead even with hrefs. */
 .nav-link {
-  text-underline-offset: 4px;
-  transition: color 140ms ease;
+    text-underline-offset: 4px;
+    transition: color 140ms ease;
 }
 .nav-link:hover,
 .nav-link:focus-visible {
-  color: var(--accent);
-  text-decoration: underline;
+    color: var(--accent);
+    text-decoration: underline;
 }
 .nav-link:focus-visible,
 .footer-link:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
 }
 
 .footer-link {
-  transition: color 140ms ease;
+    transition: color 140ms ease;
 }
 .footer-link:hover,
 .footer-link:focus-visible {
-  color: #fff;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 /* swap CTA copy on tiny screens so it never overflows the nav row */
 .cta-short {
-  display: none;
+    display: none;
 }
 @media (max-width: 380px) {
-  .cta-full {
-    display: none;
-  }
-  .cta-short {
-    display: inline;
-  }
+    .cta-full {
+        display: none;
+    }
+    .cta-short {
+        display: inline;
+    }
 }
 
 /* primary cta hover: messenger-blue at rest → deep ink on hover.
  * also lifts the offset stamp so the button feels pressed-and-released. */
 .cta-btn:hover,
 .cta-btn:focus-visible {
-  background: var(--ink) !important;
+    background: var(--ink) !important;
 }
 .cta-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
 }
 
 /* ghost button hover: fills with the page wash so it lifts off the bg. */
 .ghost-btn:hover,
 .ghost-btn:focus-visible {
-  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+    background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
 }
 .ghost-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
 }
 
 /* nav cta on phones: bigger touch target without bloating the chrome.
  * desktop keeps the compact shape used in the design comp. */
 @media (max-width: 640px) {
-  .cta-btn {
-    padding: 13px 18px !important;
-  }
+    .cta-btn {
+        padding: 13px 18px !important;
+    }
 }
 
 /* language pills: bump touch target on mobile without bloating desktop.
@@ -342,37 +338,40 @@ body {
  * flag chips that really are buttons. the lift now lives on those instead,
  * so "it lifts" reliably means "you can click it". */
 .lang-pill {
-  padding: 9px 14px;
-  font-weight: 600;
-  cursor: default;
+    padding: 9px 14px;
+    font-weight: 600;
+    cursor: default;
 }
 
 /* the flag chips in the live preview — the page's only real controls. this is
  * the sticker-lift the inert .lang-pill above gave up, so the vocabulary now
  * tracks interactivity: it lifts, you can click it. */
 .chat-lang-chip {
-  transition: transform 140ms ease, box-shadow 140ms ease, background 160ms ease,
-    color 160ms ease;
+    transition:
+        transform 140ms ease,
+        box-shadow 140ms ease,
+        background 160ms ease,
+        color 160ms ease;
 }
 .chat-lang-chip:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 3px 3px 0 var(--ink);
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0 var(--ink);
 }
 .chat-lang-chip:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .chat-lang-chip,
-  .chat-lang-chip:hover {
-    transform: none;
-    transition: none;
-  }
+    .chat-lang-chip,
+    .chat-lang-chip:hover {
+        transform: none;
+        transition: none;
+    }
 }
 @media (max-width: 640px) {
-  .lang-pill {
-    padding: 11px 14px;
-  }
+    .lang-pill {
+        padding: 11px 14px;
+    }
 }
 
 /*
@@ -382,45 +381,45 @@ body {
  * global animation kill-switch above.
  */
 .marquee {
-  overflow: hidden;
-  background: var(--ink);
-  color: var(--bg);
-  border-top: 2px solid var(--ink);
-  border-bottom: 2px solid var(--ink);
-  padding: 12px 0;
-  user-select: none;
+    overflow: hidden;
+    background: var(--ink);
+    color: var(--bg);
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    padding: 12px 0;
+    user-select: none;
 }
 .marquee-track {
-  display: flex;
-  width: max-content;
-  gap: 0;
-  animation: marquee-scroll 28s linear infinite;
+    display: flex;
+    width: max-content;
+    gap: 0;
+    animation: marquee-scroll 28s linear infinite;
 }
 .marquee:hover .marquee-track {
-  animation-play-state: paused;
+    animation-play-state: paused;
 }
 .marquee-chunk {
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
 }
 .marquee-chunk > span {
-  padding: 0 18px;
+    padding: 0 18px;
 }
 .marquee-chunk > .marquee-star {
-  color: var(--accent-2);
-  padding: 0;
+    color: var(--accent-2);
+    padding: 0;
 }
 @keyframes marquee-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
 }
 
 /*
@@ -429,22 +428,24 @@ body {
  * no-js (and reduced-motion, via the global override) still see content.
  */
 .reveal {
-  opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+        opacity 0.6s ease-out,
+        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal.is-visible {
-  opacity: 1;
-  transform: none;
+    opacity: 1;
+    transform: none;
 }
 
 /* hero snake: poke-able. the wrapper takes the click, art stays inert. */
 .snake-poke {
-  cursor: pointer;
+    cursor: pointer;
 }
 /* the poke target is a real button now, so it takes keyboard focus. match the
  * ring the other controls use instead of falling back to the ua outline. */
 .snake-poke:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
 }
