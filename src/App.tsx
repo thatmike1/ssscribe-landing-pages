@@ -1,16 +1,19 @@
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MesscribeLanding from "@/pages/messscribe-landing";
 
+/**
+ * the whole site. there is exactly one page — navigation is in-page anchors
+ * (see `src/lib/site.ts`) — so there is no router. `vercel.json` rewrites every
+ * path to `index.html`, which means an unknown url still lands here rather than
+ * on vercel's stock 404.
+ */
 export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MesscribeLanding />} />
-      </Routes>
-      <Analytics />
-      <SpeedInsights />
-    </BrowserRouter>
-  );
+    return (
+        <>
+            <MesscribeLanding />
+            <Analytics />
+            <SpeedInsights />
+        </>
+    );
 }
