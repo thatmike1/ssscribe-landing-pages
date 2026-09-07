@@ -1,4 +1,5 @@
 import { track } from "@vercel/analytics";
+import { trackCtaClick } from "@/lib/analytics";
 import { SECTION_LINKS } from "@/lib/site";
 import { BrandLockup } from "./brand-lockup";
 import { BrandLink } from "./primitives";
@@ -34,13 +35,14 @@ export function SiteNav({ product }: { product: ProductConfig }) {
                 <BrandLink
                     size="nav"
                     href={product.botUrl}
-                    onClick={() =>
+                    onClick={() => {
+                        trackCtaClick("nav");
                         track("cta_click", {
                             location: "nav",
                             action: "add",
                             product: product.name,
-                        })
-                    }
+                        });
+                    }}
                 >
                     <span className="cta-full">add to {product.platform} →</span>
                     <span className="cta-short">add →</span>

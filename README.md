@@ -43,6 +43,9 @@ npm run build    # tsc -b && vite build
 npm run lint     # eslint
 ```
 
+Analytics are optional: set `VITE_POSTHOG_KEY` (see `.env.example`) to send
+pageviews and CTA clicks to PostHog EU; leave it empty and nothing is loaded.
+
 ## Brand context
 
 Three documents drive every visual decision, and they are the most useful

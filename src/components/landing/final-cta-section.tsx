@@ -1,4 +1,5 @@
 import { track } from "@vercel/analytics";
+import { trackCtaClick } from "@/lib/analytics";
 import { Snake } from "@/components/snake";
 import { BrandLink, Eyebrow, Section, SectionHeading } from "./primitives";
 import { Reveal } from "./reveal";
@@ -84,13 +85,14 @@ export function FinalCtaSection({ product }: { product: ProductConfig }) {
                     stamp="accent"
                     href={product.botUrl}
                     style={{ marginTop: 28 }}
-                    onClick={() =>
+                    onClick={() => {
+                        trackCtaClick("final-cta");
                         track("cta_click", {
                             location: "final",
                             action: "add",
                             product: product.name,
-                        })
-                    }
+                        });
+                    }}
                 >
                     add {product.name} to {product.platform} →
                 </BrandLink>

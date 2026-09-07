@@ -1,3 +1,4 @@
+import { analyticsEnabled } from "@/lib/analytics";
 import { CONTACT_URL, SECTION_LINKS, SOURCE_URL } from "@/lib/site";
 import { BrandLockup } from "./brand-lockup";
 import { labelStyle } from "./styles";
@@ -6,7 +7,8 @@ import type { ProductConfig } from "./types";
 /**
  * every entry here resolves. the earlier list also named a changelog, privacy
  * and terms pages, and two unbuilt sibling products — none of which exist, so
- * they were cut rather than left as text that looks like a link and isn't.
+ * they were cut rather than left as text that looks like a link and isn't. the
+ * privacy line under the lockup is plain text for the same reason.
  */
 const FOOTER_COLUMNS = [
     { heading: "product", links: SECTION_LINKS },
@@ -55,6 +57,26 @@ export function SiteFooter({ product }: { product: ProductConfig }) {
                     >
                         voice notes, readable. made by one person who got too many of them.
                     </div>
+                    {/*
+                     * the site's whole privacy story, since there is no privacy page to
+                     * link. gated on the same key as the analytics themselves — a build
+                     * without one collects nothing, so it must not say otherwise.
+                     */}
+                    {analyticsEnabled && (
+                        <div
+                            style={{
+                                marginTop: 10,
+                                fontSize: 13,
+                                color: "rgba(255,255,255,0.6)",
+                                fontWeight: 500,
+                                maxWidth: 280,
+                                lineHeight: 1.5,
+                            }}
+                        >
+                            anonymous usage analytics via posthog eu — no cookies, no session
+                            recording.
+                        </div>
+                    )}
                 </div>
                 {FOOTER_COLUMNS.map(({ heading, links }) => (
                     <div key={heading}>

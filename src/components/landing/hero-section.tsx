@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { track } from "@vercel/analytics";
+import { trackCtaClick } from "@/lib/analytics";
 import { SnakeIdle } from "@/components/snake";
 import { BrandLink, Section, SectionHeading, StickerPill } from "./primitives";
 import type { ProductConfig } from "./types";
@@ -114,13 +115,14 @@ export function HeroSection({ product }: { product: ProductConfig }) {
                         <BrandLink
                             stamp="accent"
                             href={product.botUrl}
-                            onClick={() =>
+                            onClick={() => {
+                                trackCtaClick("hero");
                                 track("cta_click", {
                                     location: "hero",
                                     action: "add",
                                     product: product.name,
-                                })
-                            }
+                                });
+                            }}
                         >
                             add to {product.platform} — free →
                         </BrandLink>
