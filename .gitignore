@@ -42,3 +42,4 @@ CONTEXT-FROM-MESSSCRIBE.md
 .dolt/
 *.db
 .beads-credential-key
+.vercel
