@@ -45,6 +45,15 @@ let pending: string[] = [];
 let failed = false;
 
 /**
+ * headless chrome's default 800x600 screen, which no real device reports. the
+ * scanners that hit these sites fake their user agent and hide
+ * navigator.webdriver, so posthog's own bot filter lets them through.
+ */
+function looksHeadless(): boolean {
+    return window.screen.width === 800 && window.screen.height === 600;
+}
+
+/**
  * boots posthog and captures the initial `$pageview`.
  *
  * a no-op without a key. with one, the sdk is fetched asynchronously — this
@@ -52,6 +61,10 @@ let failed = false;
  */
 export function initAnalytics(): void {
     if (!analyticsEnabled || client) return;
+    if (looksHeadless()) {
+        failed = true;
+        return;
+    }
 
     // the slim build: capture and pageviews, none of the surveys / toolbar /
     // recorder machinery this site does not use. "no-external" means it never
