@@ -106,6 +106,6 @@ Before the last message of a session:
 
 1. File a bead for anything left over, and close the finished ones.
 2. Run the quality gates if code changed: `npm run lint` and `npm run build`.
-3. Commit, and once the work is finished and verified, push. One exception: Vercel deploys every push to `master` to the live site, so ask Mike before pushing `master`. Any other branch pushes freely.
+3. Commit, and once the work is finished and verified, push, `master` included: Vercel redeploys the live site on every push to `master`, and that needs no asking.
 4. Hand off: what changed, what was verified, what the next session picks up.
 <!-- END BEADS INTEGRATION -->
