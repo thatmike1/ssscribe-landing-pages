@@ -37,10 +37,10 @@ translating it twice. Anything shared moved into `src/components/landing/styles.
 ## Run
 
 ```bash
-npm install
-npm run dev      # vite dev server on :5173
-npm run build    # tsc -b && vite build
-npm run lint     # eslint
+pnpm install --frozen-lockfile
+pnpm run dev      # vite dev server on :5173
+pnpm run build    # native tsc -b && vite build
+pnpm run lint     # eslint
 ```
 
 Analytics are optional: set `VITE_POSTHOG_KEY` (see `.env.example`) to send
